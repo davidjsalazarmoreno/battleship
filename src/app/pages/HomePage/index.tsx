@@ -4,6 +4,7 @@ import { NavBar } from 'app/components/NavBar';
 import { Masthead } from './Masthead';
 import { Features } from './Features';
 import { PageWrapper } from 'app/components/PageWrapper';
+import { Grid } from 'app/components/Grid';
 
 export function HomePage() {
   return (
@@ -17,8 +18,9 @@ export function HomePage() {
       </Helmet>
       <NavBar />
       <PageWrapper>
-        <Masthead />
-        <Features />
+        {/* <Masthead />
+        <Features /> */}
+        <Grid rows={10} columns={10} />
       </PageWrapper>
     </>
   );
