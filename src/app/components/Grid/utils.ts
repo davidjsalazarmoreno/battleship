@@ -1,4 +1,4 @@
-import { Props as Cell } from './Cell';
+import { CellModel as Cell } from './Cell';
 
 export function getGridArray(dimensions: number) {
   const array: Cell[] = [];

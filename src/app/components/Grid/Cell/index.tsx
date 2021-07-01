@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import styled from 'styled-components/macro';
 
-export type Props = {
+export type CellModel = {
   value: any;
   index: number;
   row: string;
   col: number;
 };
 
+export type Props = {
+  style: CSSProperties;
+  onClick: any;
+} & CellModel;
+
 export const Cell: React.FC<Props> = props => {
-  return <Wrapper>{props.index}</Wrapper>;
+  return (
+    <Wrapper style={props.style} onClick={props.onClick}>
+      {props.index}
+    </Wrapper>
+  );
 };
 
 export const Wrapper = styled.div`
