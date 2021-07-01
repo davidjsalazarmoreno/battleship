@@ -1,5 +1,7 @@
+import { CSSProperties } from 'react';
 import { CellModel as Cell } from './Cell';
 
+// Grid building
 export function getGridArray(dimensions: number) {
   const array: Cell[] = [];
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -26,4 +28,71 @@ export function getGridArray(dimensions: number) {
   }
 
   return array;
+}
+
+// Render
+export type Ship = {
+  position: string[];
+  strikes: string[];
+};
+
+export function cellHasFailedShot(gridPosition: string, shots: Set<string>) {
+  return shots.has(gridPosition);
+}
+
+export function getShip(gridPosition: string, ships: Ship[]) {
+  const ship = ships.find(({ position }) => position.includes(gridPosition));
+
+  return ship;
+}
+
+export function getBaseCellStyles(
+  gridPosition: string,
+  ships: Ship[],
+  shots: Set<string>,
+): CSSProperties {
+  const ship = getShip(gridPosition, ships);
+  if (ship) {
+    const isSunk = ship.strikes.sort().join('') === ship.position.join('');
+    if (isSunk) {
+      return {
+        backgroundColor: 'black',
+        color: 'red',
+      };
+    }
+
+    return ship.strikes.includes(gridPosition)
+      ? {
+          backgroundColor: 'orange',
+        }
+      : {
+          backgroundColor: 'green',
+        };
+  }
+
+  if (cellHasFailedShot(gridPosition, shots)) {
+    return {
+      backgroundColor: 'white',
+    };
+  }
+
+  return {
+    backgroundColor: 'blue',
+  };
+}
+
+export function getPlayerCellStyle(
+  gridPosition: string,
+  ships: Ship[],
+  shots: Set<string>,
+) {
+  return getBaseCellStyles(gridPosition, ships, shots);
+}
+
+export function getCpuCellStyle(
+  gridPosition: string,
+  ships: Ship[],
+  shots: Set<string>,
+) {
+  return getBaseCellStyles(gridPosition, ships, shots);
 }
