@@ -9,35 +9,83 @@ export type Props = {
 };
 
 export type Ship = {
-  shot: boolean;
+  position: string[];
+  strikes: string[];
 };
 
 const shots: Set<string> = new Set();
-const ships: Map<string, Ship> = new Map();
+const ships: Ship[] = [
+  // 1 ship with four spaces
+  {
+    position: ['A1', 'A2', 'A3'],
+    strikes: ['A1', 'A2', 'A3'],
+  },
+  // 2 ships with three spaces
+  {
+    position: ['H1', 'H2', 'H3'],
+    strikes: ['H3'],
+  },
+  {
+    position: ['J1', 'J2', 'J3'],
+    strikes: [],
+  },
+  // 3 ships with two spaces
+  {
+    position: ['A10', 'B10'],
+    strikes: [],
+  },
+  {
+    position: ['D5', 'E5'],
+    strikes: [],
+  },
+  {
+    position: ['F6', 'G6'],
+    strikes: [],
+  },
+  // 4 ships with 1 spaces
+  {
+    position: ['F3'],
+    strikes: [],
+  },
+  {
+    position: ['J9'],
+    strikes: [],
+  },
+  {
+    position: ['C8'],
+    strikes: [],
+  },
+  {
+    position: ['D1'],
+    strikes: [],
+  },
+];
 
-shots.add('A1');
-
-ships.set('A9', { shot: false });
+shots.add('F5');
+shots.add('I10');
 
 function cellHasFailedShot(gridPosition: string) {
   return shots.has(gridPosition);
 }
 
 function getShip(gridPosition: string) {
-  return ships.get(gridPosition);
+  const ship = ships.find(({ position }) => position.includes(gridPosition));
+
+  return ship;
 }
 
 function getPlayerCellStyle(gridPosition: string): CSSProperties {
-  console.log(gridPosition)
-  if (cellHasFailedShot(gridPosition)) {
-    return {
-      backgroundColor: 'red',
-    };
-  }
-
   const ship = getShip(gridPosition);
   if (ship) {
-    return ship.shot
+    const isSunk = ship.strikes.sort().join('') === ship.position.join('');
+    if (isSunk) {
+      return {
+        backgroundColor: 'black',
+        color: 'red'
+      };
+    }
+
+    return ship.strikes.includes(gridPosition)
       ? {
           backgroundColor: 'orange',
         }
@@ -46,13 +94,19 @@ function getPlayerCellStyle(gridPosition: string): CSSProperties {
         };
   }
 
+  if (cellHasFailedShot(gridPosition)) {
+    return {
+      backgroundColor: 'white',
+    };
+  }
+
   return {
     backgroundColor: 'blue',
   };
 }
 
 function handlePlayerClick(gridPosition: string) {
-  if (cellHasFailedShot(gridPosition) || getShip(gridPosition)) {
+  if (getShip(gridPosition) || cellHasFailedShot(gridPosition)) {
     return;
   }
 

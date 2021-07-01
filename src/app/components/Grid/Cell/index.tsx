@@ -16,7 +16,7 @@ export type Props = {
 export const Cell: React.FC<Props> = props => {
   return (
     <Wrapper style={props.style} onClick={props.onClick}>
-      {props.index}
+      {`${props.row}${props.col}`.toUpperCase()}
     </Wrapper>
   );
 };
