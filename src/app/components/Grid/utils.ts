@@ -34,6 +34,7 @@ export function getGridArray(dimensions: number) {
 export type Ship = {
   position: string[];
   strikes: string[];
+  name: string;
 };
 
 export function cellHasFailedShot(gridPosition: string, shots: Set<string>) {
