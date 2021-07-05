@@ -1,6 +1,16 @@
 import { CSSProperties } from 'react';
 import { CellModel as Cell } from './Cell';
 
+// Source: https://stackoverflow.com/a/2117523/9259227
+export function uuidv4() {
+  const placeholder = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+  return placeholder.replace(/[xy]/g, c => {
+    let r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 // Grid building
 export function getGridArray(dimensions: number) {
   const array: Cell[] = [];
@@ -96,7 +106,6 @@ export function getCpuCellStyle(
   return getBaseCellStyles(gridPosition, ships, shots, true);
 }
 
-
 export function getPlayerCellStyle(
   gridPosition: string,
   ships: Ship[],
@@ -105,3 +114,20 @@ export function getPlayerCellStyle(
   return getBaseCellStyles(gridPosition, ships, shots, false);
 }
 
+export function shotAllowed(
+  position: string,
+  ships: Ship[],
+  shots: Set<string>,
+) {
+  const ship = getShip(position, ships);
+  const shipHasStrike = ship && ship.strikes.includes(position);
+  if (shipHasStrike) {
+    return false;
+  }
+
+  if (cellHasFailedShot(position, shots)) {
+    return false;
+  }
+
+  return true;
+}

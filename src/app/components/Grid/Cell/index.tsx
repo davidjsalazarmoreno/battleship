@@ -10,12 +10,13 @@ export type CellModel = {
 
 export type Props = {
   style: CSSProperties;
-  onClick: any;
+  onClick?: Function;
 } & CellModel;
 
 export const Cell: React.FC<Props> = props => {
+  const { onClick = () => '' } = props;
   return (
-    <Wrapper style={props.style} onClick={props.onClick}>
+    <Wrapper style={props.style} onClick={() => onClick()}>
       {`${props.row}${props.col}`.toUpperCase()}
     </Wrapper>
   );

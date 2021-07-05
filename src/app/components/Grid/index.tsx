@@ -3,176 +3,90 @@ import styled from 'styled-components';
 import {
   getGridArray,
   Ship,
-  cellHasFailedShot,
-  getShip,
   getCpuCellStyle,
   getPlayerCellStyle,
+  shotAllowed,
+  getShip,
 } from './utils';
 import { Cell } from './Cell';
-
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
+import { cpuInitialShips, playerInitialShips } from './constants';
 
 export type Props = {
   rows: number;
   columns: number;
 };
 
-// CPU
-const cpuInitialShips: Ship[] = [
-  // 1 ship with four spaces
-  {
-    position: ['A1', 'A2', 'A3'],
-    strikes: ['A1', 'A2', 'A3'],
-    name: uuidv4(),
-  },
-  // 2 ships with three spaces
-  {
-    position: ['H1', 'H2', 'H3'],
-    strikes: ['H3'],
-    name: uuidv4(),
-  },
-  {
-    position: ['J1', 'J2', 'J3'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  // 3 ships with two spaces
-  {
-    position: ['A10', 'B10'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  {
-    position: ['D5', 'E5'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  {
-    position: ['F6', 'G6'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  // 4 ships with 1 spaces
-  {
-    position: ['F3'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  {
-    position: ['J9'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  {
-    position: ['C8'],
-    strikes: [],
-    name: uuidv4(),
-  },
-  {
-    position: ['D1'],
-    strikes: [],
-    name: uuidv4(),
-  },
-];
+export type GameLoop = {
+  cpuTurn: boolean;
+  turnsLeft: number;
+};
 
-// Player
+const defaultGameLoop: GameLoop = {
+  cpuTurn: false,
+  turnsLeft: 15,
+};
 
-const playerShots: Set<string> = new Set();
-const playerShips: Ship[] = [
-  // 1 ship with four spaces
-  {
-    position: ['A1', 'A2', 'A3'],
-    strikes: ['A1', 'A2', 'A3'],
-    name: uuidv4(),
-  },
-  // 2 ships with three spaces
-  {
-    position: ['H1', 'H2', 'H3'],
-    strikes: ['H3'],
-    name: uuidv4(),
-  },
-  {
-    position: ['J1', 'J2', 'J3'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  // 3 ships with two spaces
-  {
-    position: ['A10', 'B10'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  {
-    position: ['D5', 'E5'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  {
-    position: ['F6', 'G6'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  // 4 ships with 1 spaces
-  {
-    position: ['F3'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  {
-    position: ['J9'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  {
-    position: ['C8'],
-    strikes: [],
-    name: 'first-ship',
-  },
-  {
-    position: ['D1'],
-    strikes: [],
-    name: 'first-ship',
-  },
-];
+// TODO: Create game logic module
+function getRandomGridPosition() {
+  const column = Math.round(Math.random() * 10);
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+  const letterPosition = column >= letters.length ? column - 1 : column;
 
-playerShots.add('F5');
-playerShots.add('I10');
-
-function shotAllowed(position: string, ships: Ship[], shots: Set<string>) {
-  const ship = getShip(position, ships);
-  const shipHasStrike = ship && ship.strikes.includes(position);
-  if (shipHasStrike) {
-    return;
-  }
-
-  if (cellHasFailedShot(position, shots)) {
-    return;
-  }
-
-  return true;
+  console.log(column);
+  console.log(letters.length);
+  return `${letters[letterPosition]}${column}`.toUpperCase();
 }
 
 export const Grid: React.FC<Props> = props => {
   const { rows, columns } = props;
   const grid = getGridArray(rows * columns);
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
+  const [playerShips, setPlayerShips] = useState<Ship[]>([]);
   const [cpuShots, setCpuShots] = useState<Set<string>>(new Set());
+  const [playerShots, setPlayerShots] = useState<Set<string>>(new Set());
+  const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   useEffect(() => {
     setCpuShips(cpuInitialShips);
+    setCpuShips(playerInitialShips);
   }, []);
 
-  const handleCpuCellClick = (position: string) => {
+  useEffect(() => {
+    if (gameLoop.turnsLeft === 0) {
+      // Gameover here
+      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      return;
+    }
+
+    if (gameLoop.cpuTurn) {
+      // Cpu turn here
+      // const vertical = Math.round(Math.random()) === 1;
+
+      let position = getRandomGridPosition();
+      // TODO: Create custom hook
+      while (shotAllowed(position, playerShips, playerShots) === false) {
+        console.log(getRandomGridPosition());
+        position = getRandomGridPosition();
+      }
+
+      handleCpuAttack(position);
+      setGameLoop(loop => ({
+        ...loop,
+        cpuTurn: false,
+        turnsLeft: loop.turnsLeft - 1,
+      }));
+    }
+  }, [gameLoop.turnsLeft, gameLoop.cpuTurn]);
+
+  const handlePlayerAttack = (position: string) => {
+    if (gameLoop.turnsLeft === 0) {
+      return;
+    }
+
     if (shotAllowed(position, cpuShips, cpuShots)) {
       const ship = getShip(position, cpuShips);
       if (ship) {
-        console.log('Shooting ship at ' + position);
+        // console.log('Shooting ship at ' + position);
         const shipIndex = cpuShips.findIndex(({ name }) => ship.name === name);
         const updated = [...cpuShips];
 
@@ -180,17 +94,50 @@ export const Grid: React.FC<Props> = props => {
 
         setCpuShips(updated);
       } else {
-        console.log('Missed at ' + position);
+        // console.log('Missed at ' + position);
         const updated = new Set(cpuShots);
-        updated.add(position)
+        updated.add(position);
         setCpuShots(updated);
+      }
+
+      setGameLoop(loop => ({ ...loop, cpuTurn: true }));
+    }
+  };
+
+  const handleCpuAttack = (position: string) => {
+    // TODO: Game over hook
+    if (gameLoop.turnsLeft === 0) {
+      return;
+    }
+
+    if (shotAllowed(position, playerShips, playerShots)) {
+      const ship = getShip(position, playerShips);
+      if (ship) {
+        // console.log('Shooting ship at ' + position);
+        const shipIndex = playerShips.findIndex(
+          ({ name }) => ship.name === name,
+        );
+        const updated = [...playerShips];
+
+        updated[shipIndex].strikes.push(position);
+
+        setPlayerShips(updated);
+      } else {
+        // console.log('Missed at ' + position);
+        const updated = new Set(playerShots);
+        updated.add(position);
+        setPlayerShots(updated);
       }
     }
   };
 
-  console.log(cpuShots);
   return (
     <>
+      <h1>
+        {gameLoop.turnsLeft === 0
+          ? 'Game over'
+          : `Turns left: ${gameLoop.turnsLeft}`}
+      </h1>
       <h1>CPU</h1>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
@@ -200,7 +147,7 @@ export const Grid: React.FC<Props> = props => {
               key={cell.index}
               {...cell}
               style={getCpuCellStyle(position, cpuShips, cpuShots)}
-              onClick={() => handleCpuCellClick(position)}
+              onClick={() => handlePlayerAttack(position)}
             />
           );
         })}
@@ -216,7 +163,6 @@ export const Grid: React.FC<Props> = props => {
               key={cell.index}
               {...cell}
               style={getPlayerCellStyle(position, playerShips, playerShots)}
-              onClick={() => console.log('HI')}
             />
           );
         })}
