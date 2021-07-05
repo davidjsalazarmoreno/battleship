@@ -27,28 +27,25 @@ const defaultGameLoop: GameLoop = {
 };
 
 // TODO: Create game logic module
-function getRandomGridPosition() {
-  const column = Math.round(Math.random() * 10);
-  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-  const letterPosition = column >= letters.length ? column - 1 : column;
-
-  console.log(column);
-  console.log(letters.length);
-  return `${letters[letterPosition]}${column}`.toUpperCase();
+function getRandomGridPosition(length: number) {
+  return Math.round(Math.random() * length - 1);
 }
 
 export const Grid: React.FC<Props> = props => {
   const { rows, columns } = props;
   const grid = getGridArray(rows * columns);
+
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
   const [playerShips, setPlayerShips] = useState<Ship[]>([]);
+
   const [cpuShots, setCpuShots] = useState<Set<string>>(new Set());
   const [playerShots, setPlayerShots] = useState<Set<string>>(new Set());
+
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   useEffect(() => {
     setCpuShips(cpuInitialShips);
-    setCpuShips(playerInitialShips);
+    setPlayerShips(playerInitialShips);
   }, []);
 
   useEffect(() => {
@@ -61,22 +58,27 @@ export const Grid: React.FC<Props> = props => {
     if (gameLoop.cpuTurn) {
       // Cpu turn here
       // const vertical = Math.round(Math.random()) === 1;
+      // console.log(grid)
+      const cccc = grid.filter(cell => {
+        return (
+          shotAllowed(`${cell.row}${cell.col}`, playerShips, cpuShots) ===
+          true
+        );
+      });
+      let index = getRandomGridPosition(cccc.length);
+      const { row, col } = cccc[index];
 
-      let position = getRandomGridPosition();
+      console.log(cccc.length)
+      console.log(`${row}${col}`.toLocaleUpperCase());
       // TODO: Create custom hook
-      while (shotAllowed(position, playerShips, playerShots) === false) {
-        console.log(getRandomGridPosition());
-        position = getRandomGridPosition();
-      }
-
-      handleCpuAttack(position);
+      handleCpuAttack(`${row}${col}`.toLocaleUpperCase());
       setGameLoop(loop => ({
         ...loop,
         cpuTurn: false,
         turnsLeft: loop.turnsLeft - 1,
       }));
     }
-  }, [gameLoop.turnsLeft, gameLoop.cpuTurn]);
+  }, [gameLoop.turnsLeft, gameLoop.cpuTurn, grid]);
 
   const handlePlayerAttack = (position: string) => {
     if (gameLoop.turnsLeft === 0) {
