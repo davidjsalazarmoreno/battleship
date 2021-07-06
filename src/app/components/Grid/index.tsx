@@ -10,6 +10,7 @@ import {
 } from './utils';
 import { Cell } from './Cell';
 import { cpuInitialShips, playerInitialShips } from './constants';
+import { useHistory } from 'react-router-dom';
 
 export type Props = {
   rows: number;
@@ -23,7 +24,7 @@ export type GameLoop = {
 
 const defaultGameLoop: GameLoop = {
   cpuTurn: false,
-  turnsLeft: 15,
+  turnsLeft: 50,
 };
 
 // TODO: Create game logic module
@@ -32,14 +33,15 @@ function getRandomGridPosition(length: number) {
 }
 
 export const Grid: React.FC<Props> = props => {
+  const history = useHistory();
   const { rows, columns } = props;
   const grid = getGridArray(rows * columns);
 
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
   const [playerShips, setPlayerShips] = useState<Ship[]>([]);
 
-  const [cpuShots, setCpuShots] = useState<Set<string>>(new Set());
-  const [playerShots, setPlayerShots] = useState<Set<string>>(new Set());
+  const [shotsByCpu, setShotsByCpu] = useState<Set<string>>(new Set());
+  const [shotsByPlayer, setShotsByPlayer] = useState<Set<string>>(new Set());
 
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
@@ -52,6 +54,7 @@ export const Grid: React.FC<Props> = props => {
     if (gameLoop.turnsLeft === 0) {
       // Gameover here
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      history.push('/game-over');
       return;
     }
 
@@ -59,19 +62,29 @@ export const Grid: React.FC<Props> = props => {
       // Cpu turn here
       // const vertical = Math.round(Math.random()) === 1;
       // console.log(grid)
-      const cccc = grid.filter(cell => {
+      const playerGrid = grid.filter(cell => {
+        // console.log(shotAllowed(`${cell.row}${cell.col}`, playerShips, shotsByCpu))
         return (
-          shotAllowed(`${cell.row}${cell.col}`, playerShips, cpuShots) ===
-          true
+          shotAllowed(`${cell.row}${cell.col}`, playerShips, shotsByCpu) === true
         );
       });
-      let index = getRandomGridPosition(cccc.length);
-      const { row, col } = cccc[index];
 
-      console.log(cccc.length)
-      console.log(`${row}${col}`.toLocaleUpperCase());
+      // console.log(playerGrid)
+
+      if (playerGrid) {
+        let index = getRandomGridPosition(playerGrid.length);
+        if (playerGrid[index]) {
+          const { row, col } = playerGrid[index];
+
+          console.log(playerGrid.length);
+          console.log(`coord: ${row}${col}`.toLocaleUpperCase());
+          handleCpuAttack(`${row}${col}`.toLocaleUpperCase());
+        }
+  
+      }
+
       // TODO: Create custom hook
-      handleCpuAttack(`${row}${col}`.toLocaleUpperCase());
+
       setGameLoop(loop => ({
         ...loop,
         cpuTurn: false,
@@ -85,7 +98,7 @@ export const Grid: React.FC<Props> = props => {
       return;
     }
 
-    if (shotAllowed(position, cpuShips, cpuShots)) {
+    if (shotAllowed(position, cpuShips, shotsByPlayer)) {
       const ship = getShip(position, cpuShips);
       if (ship) {
         // console.log('Shooting ship at ' + position);
@@ -97,9 +110,9 @@ export const Grid: React.FC<Props> = props => {
         setCpuShips(updated);
       } else {
         // console.log('Missed at ' + position);
-        const updated = new Set(cpuShots);
+        const updated = new Set(shotsByPlayer);
         updated.add(position);
-        setCpuShots(updated);
+        setShotsByPlayer(updated);
       }
 
       setGameLoop(loop => ({ ...loop, cpuTurn: true }));
@@ -112,7 +125,7 @@ export const Grid: React.FC<Props> = props => {
       return;
     }
 
-    if (shotAllowed(position, playerShips, playerShots)) {
+    if (shotAllowed(position, playerShips, shotsByCpu)) {
       const ship = getShip(position, playerShips);
       if (ship) {
         // console.log('Shooting ship at ' + position);
@@ -126,9 +139,9 @@ export const Grid: React.FC<Props> = props => {
         setPlayerShips(updated);
       } else {
         // console.log('Missed at ' + position);
-        const updated = new Set(playerShots);
+        const updated = new Set(shotsByCpu);
         updated.add(position);
-        setPlayerShots(updated);
+        setShotsByCpu(updated);
       }
     }
   };
@@ -148,7 +161,7 @@ export const Grid: React.FC<Props> = props => {
             <Cell
               key={cell.index}
               {...cell}
-              style={getCpuCellStyle(position, cpuShips, cpuShots)}
+              style={getCpuCellStyle(position, cpuShips, shotsByPlayer)}
               onClick={() => handlePlayerAttack(position)}
             />
           );
@@ -164,7 +177,7 @@ export const Grid: React.FC<Props> = props => {
             <Cell
               key={cell.index}
               {...cell}
-              style={getPlayerCellStyle(position, playerShips, playerShots)}
+              style={getPlayerCellStyle(position, playerShips, shotsByCpu)}
             />
           );
         })}

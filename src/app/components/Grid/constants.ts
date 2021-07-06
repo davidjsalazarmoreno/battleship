@@ -5,13 +5,13 @@ export const cpuInitialShips: Ship[] = [
   // 1 ship with four spaces
   {
     position: ['A1', 'A2', 'A3'],
-    strikes: ['A1', 'A2', 'A3'],
+    strikes: [],
     name: uuidv4(),
   },
   // 2 ships with three spaces
   {
     position: ['H1', 'H2', 'H3'],
-    strikes: ['H3'],
+    strikes: [],
     name: uuidv4(),
   },
   {
@@ -63,13 +63,13 @@ export const playerInitialShips: Ship[] = [
   // 1 ship with four spaces
   {
     position: ['A1', 'A2', 'A3'],
-    strikes: ['A1', 'A2', 'A3'],
+    strikes: [],
     name: uuidv4(),
   },
   // 2 ships with three spaces
   {
     position: ['H1', 'H2', 'H3'],
-    strikes: ['H3'],
+    strikes: [],
     name: uuidv4(),
   },
   {

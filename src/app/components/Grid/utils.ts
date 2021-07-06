@@ -119,13 +119,14 @@ export function shotAllowed(
   ships: Ship[],
   shots: Set<string>,
 ) {
-  const ship = getShip(position, ships);
-  const shipHasStrike = ship && ship.strikes.includes(position);
+  const pos = position.toUpperCase();
+  const ship = getShip(pos, ships);
+  const shipHasStrike = ship && ship.strikes.includes(pos);
   if (shipHasStrike) {
     return false;
   }
 
-  if (cellHasFailedShot(position, shots)) {
+  if (cellHasFailedShot(pos, shots)) {
     return false;
   }
 
