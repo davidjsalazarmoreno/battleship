@@ -1,12 +1,6 @@
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components/macro';
-
-export type CellModel = {
-  value: any;
-  index: number;
-  row: string;
-  col: number;
-};
+import { CellModel } from '../game-logic/types';
 
 export type Props = {
   style: CSSProperties;

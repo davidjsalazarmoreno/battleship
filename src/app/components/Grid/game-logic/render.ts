@@ -1,17 +1,7 @@
-import { CSSProperties } from 'react';
-import { CellModel as Cell } from './Cell';
+import { CSSProperties } from "react";
+import { cellHasFailedShot, getShip } from "./core";
+import { CellModel as Cell, Ship } from "./types";
 
-// Source: https://stackoverflow.com/a/2117523/9259227
-export function uuidv4() {
-  const placeholder = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-  return placeholder.replace(/[xy]/g, c => {
-    let r = (Math.random() * 16) | 0,
-      v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-// Grid building
 export function getGridArray(dimensions: number) {
   const array: Cell[] = [];
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -40,22 +30,7 @@ export function getGridArray(dimensions: number) {
   return array;
 }
 
-// Render
-export type Ship = {
-  position: string[];
-  strikes: string[];
-  name: string;
-};
 
-export function cellHasFailedShot(gridPosition: string, shots: Set<string>) {
-  return shots.has(gridPosition);
-}
-
-export function getShip(gridPosition: string, ships: Ship[]) {
-  const ship = ships.find(({ position }) => position.includes(gridPosition));
-
-  return ship;
-}
 
 function getShipStyles(ship: Ship, gridPosition: string, isCpu: boolean) {
   const isSunk = ship.strikes.sort().join('') === ship.position.join('');
@@ -112,23 +87,4 @@ export function getPlayerCellStyle(
   shots: Set<string>,
 ) {
   return getBaseCellStyles(gridPosition, ships, shots, false);
-}
-
-export function shotAllowed(
-  position: string,
-  ships: Ship[],
-  shots: Set<string>,
-) {
-  const pos = position.toUpperCase();
-  const ship = getShip(pos, ships);
-  const shipHasStrike = ship && ship.strikes.includes(pos);
-  if (shipHasStrike) {
-    return false;
-  }
-
-  if (cellHasFailedShot(pos, shots)) {
-    return false;
-  }
-
-  return true;
 }
