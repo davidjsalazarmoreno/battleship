@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {
-  getGridArray,
-  Ship,
-  getCpuCellStyle,
-  getPlayerCellStyle,
-  shotAllowed,
-  getShip,
-} from './utils';
 import { Cell } from './Cell';
 import { cpuInitialShips, playerInitialShips } from './constants';
 import { useHistory } from 'react-router-dom';
+import {
+  getCpuCellStyle,
+  getGridArray,
+  getPlayerCellStyle,
+  getRandomGridPosition,
+  getShip,
+  Ship,
+  shotAllowed,
+} from './game-logic';
 
 export type Props = {
   rows: number;
@@ -26,11 +27,6 @@ const defaultGameLoop: GameLoop = {
   cpuTurn: false,
   turnsLeft: 50,
 };
-
-// TODO: Create game logic module
-function getRandomGridPosition(length: number) {
-  return Math.round(Math.random() * length - 1);
-}
 
 export const Grid: React.FC<Props> = props => {
   const history = useHistory();
@@ -65,7 +61,8 @@ export const Grid: React.FC<Props> = props => {
       const playerGrid = grid.filter(cell => {
         // console.log(shotAllowed(`${cell.row}${cell.col}`, playerShips, shotsByCpu))
         return (
-          shotAllowed(`${cell.row}${cell.col}`, playerShips, shotsByCpu) === true
+          shotAllowed(`${cell.row}${cell.col}`, playerShips, shotsByCpu) ===
+          true
         );
       });
 
@@ -80,7 +77,6 @@ export const Grid: React.FC<Props> = props => {
           console.log(`coord: ${row}${col}`.toLocaleUpperCase());
           handleCpuAttack(`${row}${col}`.toLocaleUpperCase());
         }
-  
       }
 
       // TODO: Create custom hook

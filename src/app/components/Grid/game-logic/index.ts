@@ -1,4 +1,4 @@
-export { cellHasFailedShot, getShip } from './core';
+export { cellHasFailedShot, getShip, getRandomGridPosition } from './core';
 export { shotAllowed } from './events';
 export { getShips } from './initialization';
 export {

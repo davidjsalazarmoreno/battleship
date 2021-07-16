@@ -1,4 +1,4 @@
-import { Ship, uuidv4 } from './utils';
+import { Ship, uuidv4 } from './game-logic';
 
 // CPU
 export const cpuInitialShips: Ship[] = [

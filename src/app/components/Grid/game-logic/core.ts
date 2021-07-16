@@ -9,3 +9,7 @@ export function getShip(gridPosition: string, ships: Ship[]) {
 
   return ship;
 }
+
+export function getRandomGridPosition(length: number) {
+  return Math.round(Math.random() * length - 1);
+}
