@@ -10,6 +10,6 @@ describe('Initialization', () => {
   fit('generates the random positions for the ships', () => {
     const ships = getInitialShips(10, 10);
     console.log(ships)
-    expect(ships.length).toBe(50);
+    expect(ships.length).toBe(10);
   });
 });

@@ -1,69 +1,13 @@
 import { Ship } from './types';
 import { uuidv4 } from './utils';
 
+// https://stackoverflow.com/questions/34937349/javascript-create-empty-array-of-a-given-size
 function range(size: number, startAt: number = 0): ReadonlyArray<number> {
   return [...Array(size).keys()].map(i => i + startAt);
 }
 
 // Horizontal 'A1', 'A2', 'A3'
 // Vertical 'A1', 'B2', 'B3'
-
-// const ships = [
-//   // 1 ship with four spaces
-//   {
-//     position: ['A1', 'A2', 'A3'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   // 2 ships with three spaces
-//   {
-//     position: ['H1', 'H2', 'H3'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['J1', 'J2', 'J3'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   // 3 ships with two spaces
-//   {
-//     position: ['A10', 'B10'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['D5', 'E5'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['F6', 'G6'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   // 4 ships with 1 spaces
-//   {
-//     position: ['F3'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['J9'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['C8'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-//   {
-//     position: ['D1'],
-//     strikes: [],
-//     name: "uuidv4()",
-//   },
-// ];
 
 function rowFactory(cols: number) {}
 
@@ -88,48 +32,93 @@ export function getInitialShips(rows: number, cols: number) {
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
   const grid = getGridAsMap(rows, cols);
   const ships: Ship[] = [];
-  // 1 ship with four spaces
-  // 2 ships with three spaces
-  // 3 ships with two spaces
-  // 4 ships with 1 spaces
 
   let shipsToAdd = [
+    // 1 ship with four spaces
+    {
+      size: 4,
+    },
+    // 2 ships with three spaces
+    {
+      size: 3,
+    },
+    {
+      size: 3,
+    },
+    // 3 ships with two spaces
     {
       size: 2,
+    },
+    {
+      size: 2,
+    },
+    {
+      size: 2,
+    },
+    // 4 ships with 1 spaces
+    {
+      size: 1,
+    },
+    {
+      size: 1,
+    },
+    {
+      size: 1,
+    },
+    {
+      size: 1,
     },
   ];
 
   while (shipsToAdd.length > 0) {
-    let rowIndex = Math.round(Math.random() * rows - 1);
-    let columnIndex = Math.round(Math.random() * cols - 1);
+    let rowIndex = Math.round(Math.random() * rows);
+    let columnIndex = Math.round(Math.random() * cols);
 
-    let rowTaken = grid.get(letters[rowIndex])![columnIndex].taken;
+    let rowTaken = grid.get(letters[rowIndex])?.[columnIndex]?.taken;
     if (rowTaken) {
       continue;
     } else {
-      const k = range(shipsToAdd[0].size, rowIndex);
-      const taken = k.some(letterIndex => {
-        return grid.get(letters[letterIndex])![columnIndex].taken;
-      });
+      // const nextRow = grid.get(letters[rowIndex + 1]);
 
-      if (taken) {
+      // if (!nextRow) {
+      //   continue;
+      // }
+
+      // const nextColumn = nextRow[columnIndex]
+
+      // if (!nextColumn) {
+      //   continue;
+      // }
+
+      try {
+        const k = range(shipsToAdd[0].size, rowIndex + 1);
+        const taken = k.some(letterIndex => {
+          return grid.get(letters[letterIndex])![columnIndex].taken;
+        });
+
+        if (taken) {
+          continue;
+        }
+
+        grid.get(letters[rowIndex])![columnIndex].taken = true;
+        const ship: Ship = {
+          name: uuidv4(),
+          position: [`${letters[rowIndex]}${columnIndex}`],
+          strikes: [],
+        };
+        k.forEach(letterIndex => {
+          ship.position.push(
+            `${letters[letterIndex]}${columnIndex}`.toUpperCase(),
+          );
+          grid.get(letters[letterIndex])![columnIndex].taken = true;
+        });
+
+        ships.push(ship);
+
+        shipsToAdd.shift();
+      } catch (e) {
         continue;
       }
-
-      grid.get(letters[rowIndex])![columnIndex].taken = true;
-      const ship: Ship = {
-        name: uuidv4(),
-        position: [`${letters[rowIndex]}${columnIndex}`],
-        strikes: [],
-      };
-      k.forEach(letterIndex => {
-        ship.position.push(`${letters[letterIndex]}${columnIndex}`);
-        grid.get(letters[letterIndex])![columnIndex].taken = true;
-      });
-
-      ships.push(ship);
-
-      shipsToAdd.shift();
     }
   }
 

@@ -42,6 +42,8 @@ export const Grid: React.FC<Props> = props => {
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   useEffect(() => {
+    console.log(cpuInitialShips)
+    console.log(playerInitialShips)
     setCpuShips(cpuInitialShips);
     setPlayerShips(playerInitialShips);
   }, []);
