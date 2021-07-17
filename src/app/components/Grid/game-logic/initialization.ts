@@ -78,19 +78,7 @@ export function getInitialShips(rows: number, cols: number) {
     if (rowTaken) {
       continue;
     } else {
-      // const nextRow = grid.get(letters[rowIndex + 1]);
-
-      // if (!nextRow) {
-      //   continue;
-      // }
-
-      // const nextColumn = nextRow[columnIndex]
-
-      // if (!nextColumn) {
-      //   continue;
-      // }
-
-      try {
+       try {
         const k = range(shipsToAdd[0].size, rowIndex + 1);
         const taken = k.some(letterIndex => {
           return grid.get(letters[letterIndex])![columnIndex].taken;
@@ -103,7 +91,7 @@ export function getInitialShips(rows: number, cols: number) {
         grid.get(letters[rowIndex])![columnIndex].taken = true;
         const ship: Ship = {
           name: uuidv4(),
-          position: [`${letters[rowIndex]}${columnIndex}`],
+          position: [`${letters[rowIndex]}${columnIndex}`.toUpperCase()],
           strikes: [],
         };
         k.forEach(letterIndex => {
