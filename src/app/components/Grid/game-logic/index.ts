@@ -1,8 +1,12 @@
-export { cellHasFailedShot, getShip, getRandomGridPosition } from './core';
-export { shotAllowed } from './events';
-export { getShips } from './initialization';
 export {
   getGridArray,
+  cellHasFailedShot,
+  getShip,
+  getRandomGridPosition,
+} from './core';
+export { shotAllowed } from './events';
+// export { getInitialShips } from './initialization';
+export {
   getBaseCellStyles,
   getCpuCellStyle,
   getPlayerCellStyle,
