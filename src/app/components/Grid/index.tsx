@@ -21,11 +21,15 @@ export type Props = {
 export type GameLoop = {
   cpuTurn: boolean;
   turnsLeft: number;
+  playerShips: number;
+  cpuShips: number;
 };
 
 const defaultGameLoop: GameLoop = {
   cpuTurn: false,
   turnsLeft: 50,
+  playerShips: 20,
+  cpuShips: 20,
 };
 
 export const Grid: React.FC<Props> = props => {
@@ -50,11 +54,26 @@ export const Grid: React.FC<Props> = props => {
 
   useEffect(() => {
     if (gameLoop.turnsLeft === 0) {
-      // Gameover here
+      // Gameover here, tie
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
       history.push('/game-over');
       return;
     }
+
+    if (gameLoop.playerShips === 0) {
+      // Gameover here, defeat
+      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      history.push('/game-over');
+      return;
+    }
+
+    if (gameLoop.cpuShips === 0) {
+      // Gameover here, victory,
+      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      history.push('/game-over');
+      return;
+    }
+
 
     if (gameLoop.cpuTurn) {
       // Cpu turn here
@@ -103,7 +122,8 @@ export const Grid: React.FC<Props> = props => {
         const shipIndex = cpuShips.findIndex(({ name }) => ship.name === name);
         const updated = [...cpuShips];
 
-        updated[shipIndex].strikes.push(position); 
+        updated[shipIndex].strikes.push(position);
+        setGameLoop(loop => ({ ...loop, cpuShips: loop.cpuShips - 1 }));
         console.log(updated[shipIndex].strikes);
         setCpuShips(updated);
       } else {
@@ -133,7 +153,8 @@ export const Grid: React.FC<Props> = props => {
         const updated = [...playerShips];
 
         updated[shipIndex].strikes.push(position);
-
+        
+        setGameLoop(loop => ({ ...loop, playerShips: loop.playerShips - 1 }));
         setPlayerShips(updated);
       } else {
         // console.log('Missed at ' + position);
