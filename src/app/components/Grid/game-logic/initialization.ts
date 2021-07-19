@@ -1,15 +1,99 @@
 import { Ship } from './types';
-import { uuidv4 } from './utils';
+import { range, uuidv4 } from './utils';
 
-// https://stackoverflow.com/questions/34937349/javascript-create-empty-array-of-a-given-size
-function range(size: number, startAt: number = 0): ReadonlyArray<number> {
-  return [...Array(size).keys()].map(i => i + startAt);
+function rowFactory(cols: number) {}
+
+function isCellTaken(args) {
+  const { shipSize, vertical, grid, letters, rowIndex, columnIndex } = args;
+
+  if (vertical) {
+    const cells = range(shipSize, rowIndex + 1);
+    return cells.some(letterIndex => {
+      const row = grid.get(letters[letterIndex]) || [];
+      if (!row[columnIndex]) {
+        return true;
+      }
+
+      if (row[columnIndex].taken) {
+        return true;
+      }
+
+      return false;
+    });
+  } else {
+    const row = grid.get(letters[rowIndex]) || [];
+    const cells = row.slice(columnIndex);
+
+    if (cells.length < shipSize) {
+      return true;
+    }
+
+    return cells.slice(columnIndex).some(cell => {
+      return cell.taken;
+    });
+  }
+}
+
+// Vertical 'A1', 'B2', 'B3'
+function positionShipVertically(args) {
+  const {
+    grid = new Map(args.grid),
+    letters,
+    rowIndex,
+    columnIndex,
+    shipSize,
+  } = args;
+
+  const cells = range(shipSize, rowIndex + 1);
+  grid.get(letters[rowIndex])![columnIndex].taken = true;
+
+  const ship: Ship = {
+    name: uuidv4(),
+    position: [`${letters[rowIndex]}${columnIndex}`.toUpperCase()],
+    strikes: [],
+  };
+
+  cells.forEach(letterIndex => {
+    ship.position.push(`${letters[letterIndex]}${columnIndex}`.toUpperCase());
+    grid.get(letters[letterIndex])![columnIndex].taken = true;
+  });
+
+  return {
+    grid,
+    ship,
+  };
 }
 
 // Horizontal 'A1', 'A2', 'A3'
-// Vertical 'A1', 'B2', 'B3'
+function positionShipHorizontally(args) {
+  const {
+    grid = new Map(args.grid),
+    letters,
+    rowIndex,
+    columnIndex,
+    shipSize,
+  } = args;
 
-function rowFactory(cols: number) {}
+  let j = shipSize;
+  let i = columnIndex;
+  const ship: Ship = {
+    name: uuidv4(),
+    position: [],
+    strikes: [],
+  };
+
+  while (j > 0) {
+    ship.position.push(`${letters[rowIndex]}${i}`.toUpperCase());
+    grid.get(letters[rowIndex])![i].taken = true;
+    i += 1;
+    j -= 1;
+  }
+
+  return {
+    grid,
+    ship,
+  };
+}
 
 export function getGridAsMap(rows: number, cols: number) {
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -30,7 +114,7 @@ export function getInitialShips(rows: number, cols: number) {
     );
   }
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-  const grid = getGridAsMap(rows, cols);
+  let grid = getGridAsMap(rows, cols);
   const ships: Ship[] = [];
 
   let shipsToAdd = [
@@ -71,43 +155,49 @@ export function getInitialShips(rows: number, cols: number) {
   ];
 
   while (shipsToAdd.length > 0) {
-    let rowIndex = Math.round(Math.random() * rows);
-    let columnIndex = Math.round(Math.random() * cols);
+    const rowIndex = Math.round(Math.random() * rows);
+    const columnIndex = Math.round(Math.random() * cols);
+    const rowTaken = grid.get(letters[rowIndex])?.[columnIndex]?.taken;
+    const shipSize = shipsToAdd[0].size;
 
-    let rowTaken = grid.get(letters[rowIndex])?.[columnIndex]?.taken;
     if (rowTaken) {
       continue;
-    } else {
-       try {
-        const k = range(shipsToAdd[0].size, rowIndex + 1);
-        const taken = k.some(letterIndex => {
-          return grid.get(letters[letterIndex])![columnIndex].taken;
-        });
-
-        if (taken) {
-          continue;
-        }
-
-        grid.get(letters[rowIndex])![columnIndex].taken = true;
-        const ship: Ship = {
-          name: uuidv4(),
-          position: [`${letters[rowIndex]}${columnIndex}`.toUpperCase()],
-          strikes: [],
-        };
-        k.forEach(letterIndex => {
-          ship.position.push(
-            `${letters[letterIndex]}${columnIndex}`.toUpperCase(),
-          );
-          grid.get(letters[letterIndex])![columnIndex].taken = true;
-        });
-
-        ships.push(ship);
-
-        shipsToAdd.shift();
-      } catch (e) {
-        continue;
-      }
     }
+
+    const vertical = Math.round(Math.random()) === 1;
+    const taken = isCellTaken({
+      shipSize,
+      vertical,
+      grid,
+      letters,
+      rowIndex: rowIndex + 1,
+      columnIndex,
+    });
+
+    if (taken) {
+      continue;
+    }
+
+    const { grid: updatedGrid, ship } = vertical
+      ? positionShipVertically({
+          grid,
+          letters,
+          rowIndex,
+          columnIndex,
+          shipSize,
+        })
+      : positionShipHorizontally({
+          grid,
+          letters,
+          rowIndex,
+          columnIndex,
+          shipSize,
+        });
+
+    grid = updatedGrid;
+
+    ships.push(ship);
+    shipsToAdd.shift();
   }
 
   return ships;

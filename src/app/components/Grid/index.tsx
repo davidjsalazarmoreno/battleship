@@ -159,7 +159,7 @@ export const Grid: React.FC<Props> = props => {
             <Cell
               key={cell.index}
               {...cell}
-              style={getCpuCellStyle(position, cpuShips, shotsByPlayer)}
+              style={getPlayerCellStyle(position, cpuShips, shotsByPlayer)}
               onClick={() => handlePlayerAttack(position)}
             />
           );

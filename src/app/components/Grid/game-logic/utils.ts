@@ -7,3 +7,11 @@ export function uuidv4() {
     return v.toString(16);
   });
 }
+
+// https://stackoverflow.com/questions/34937349/javascript-create-empty-array-of-a-given-size
+export function range(
+  size: number,
+  startAt: number = 0,
+): ReadonlyArray<number> {
+  return [...Array(size).keys()].map(i => i + startAt);
+}
