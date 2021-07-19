@@ -13,3 +13,4 @@ export {
 } from './render';
 export type { CellModel, Ship } from './types';
 export { uuidv4 } from './utils';
+export { useLocalStorage } from './storage';

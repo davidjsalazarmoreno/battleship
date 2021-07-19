@@ -11,6 +11,7 @@ import {
   getShip,
   Ship,
   shotAllowed,
+  useLocalStorage,
 } from './game-logic';
 
 export type Props = {
@@ -45,6 +46,11 @@ export const Grid: React.FC<Props> = props => {
 
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
+  const [scoreboard, setScoreboard] = useLocalStorage(
+    '@battleship/scoreboard',
+    [],
+  );
+
   useEffect(() => {
     console.log(cpuInitialShips);
     console.log(playerInitialShips);
@@ -56,6 +62,13 @@ export const Grid: React.FC<Props> = props => {
     if (gameLoop.turnsLeft === 0) {
       // Gameover here, tie
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      scoreboard.push({
+        result: 'tie',
+        cpuShips: gameLoop.cpuShips,
+        playerShips: gameLoop.playerShips,
+        turnsLeft: gameLoop.turnsLeft,
+      });
+      setScoreboard(scoreboard);
       history.push('/game-over');
       return;
     }
@@ -63,6 +76,13 @@ export const Grid: React.FC<Props> = props => {
     if (gameLoop.playerShips === 0) {
       // Gameover here, defeat
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      scoreboard.push({
+        result: 'defeat',
+        cpuShips: gameLoop.cpuShips,
+        playerShips: gameLoop.playerShips,
+        turnsLeft: gameLoop.turnsLeft,
+      });
+      setScoreboard(scoreboard);
       history.push('/game-over');
       return;
     }
@@ -70,10 +90,16 @@ export const Grid: React.FC<Props> = props => {
     if (gameLoop.cpuShips === 0) {
       // Gameover here, victory,
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      scoreboard.push({
+        result: 'victory',
+        cpuShips: gameLoop.cpuShips,
+        playerShips: gameLoop.playerShips,
+        turnsLeft: gameLoop.turnsLeft,
+      });
+      setScoreboard(scoreboard);
       history.push('/game-over');
       return;
     }
-
 
     if (gameLoop.cpuTurn) {
       // Cpu turn here
@@ -153,7 +179,7 @@ export const Grid: React.FC<Props> = props => {
         const updated = [...playerShips];
 
         updated[shipIndex].strikes.push(position);
-        
+
         setGameLoop(loop => ({ ...loop, playerShips: loop.playerShips - 1 }));
         setPlayerShips(updated);
       } else {
