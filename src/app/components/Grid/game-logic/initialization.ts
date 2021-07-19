@@ -14,7 +14,7 @@ function isCellTaken(args) {
         return true;
       }
 
-      if (row[columnIndex].taken) {
+      if (row[columnIndex].taken === true) {
         return true;
       }
 
@@ -28,24 +28,24 @@ function isCellTaken(args) {
       return true;
     }
 
-    return cells.slice(columnIndex).some(cell => {
-      return cell.taken;
+    return cells.some(cell => {
+      return cell.taken === true;
     });
   }
 }
 
+export type PositionArgs = {
+  letters: string[];
+  rowIndex: number;
+  columnIndex: number;
+  shipSize: number;
+};
+
 // Vertical 'A1', 'B2', 'B3'
-function positionShipVertically(args) {
-  const {
-    grid = new Map(args.grid),
-    letters,
-    rowIndex,
-    columnIndex,
-    shipSize,
-  } = args;
+function positionShipVertically(args: PositionArgs) {
+  const { letters, rowIndex, columnIndex, shipSize } = args;
 
   const cells = range(shipSize, rowIndex + 1);
-  grid.get(letters[rowIndex])![columnIndex].taken = true;
 
   const ship: Ship = {
     name: uuidv4(),
@@ -54,27 +54,18 @@ function positionShipVertically(args) {
   };
 
   cells.forEach(letterIndex => {
-    ship.position.push(`${letters[letterIndex]}${columnIndex}`.toUpperCase());
-    grid.get(letters[letterIndex])![columnIndex].taken = true;
+    const cellName = `${letters[letterIndex]}${columnIndex}`.toUpperCase();
+    ship.position.push(cellName);
   });
 
-  return {
-    grid,
-    ship,
-  };
+  return ship;
 }
 
 // Horizontal 'A1', 'A2', 'A3'
-function positionShipHorizontally(args) {
-  const {
-    grid = new Map(args.grid),
-    letters,
-    rowIndex,
-    columnIndex,
-    shipSize,
-  } = args;
+function positionShipHorizontally(args: PositionArgs) {
+  const { letters, rowIndex, columnIndex, shipSize } = args;
 
-  let j = shipSize;
+  let size = shipSize;
   let i = columnIndex;
   const ship: Ship = {
     name: uuidv4(),
@@ -82,17 +73,13 @@ function positionShipHorizontally(args) {
     strikes: [],
   };
 
-  while (j > 0) {
+  while (size > 0) {
     ship.position.push(`${letters[rowIndex]}${i}`.toUpperCase());
-    grid.get(letters[rowIndex])![i].taken = true;
     i += 1;
-    j -= 1;
+    size -= 1;
   }
 
-  return {
-    grid,
-    ship,
-  };
+  return ship;
 }
 
 export function getGridAsMap(rows: number, cols: number) {
@@ -155,12 +142,13 @@ export function getInitialShips(rows: number, cols: number) {
   ];
 
   while (shipsToAdd.length > 0) {
-    const rowIndex = Math.round(Math.random() * rows);
-    const columnIndex = Math.round(Math.random() * cols);
-    const rowTaken = grid.get(letters[rowIndex])?.[columnIndex]?.taken;
+    const rowIndex = Math.round(Math.random() * (rows - 1));
+    const columnIndex = Math.round(Math.random() * (cols - 1));
+    console.log(columnIndex, 'columnIndex')
+    const row = grid.get(letters[rowIndex]);
     const shipSize = shipsToAdd[0].size;
 
-    if (rowTaken) {
+    if (!row || row[columnIndex]?.taken) {
       continue;
     }
 
@@ -178,27 +166,41 @@ export function getInitialShips(rows: number, cols: number) {
       continue;
     }
 
-    const { grid: updatedGrid, ship } = vertical
+    const ship = vertical
       ? positionShipVertically({
-          grid,
           letters,
           rowIndex,
           columnIndex,
           shipSize,
         })
       : positionShipHorizontally({
-          grid,
           letters,
           rowIndex,
           columnIndex,
           shipSize,
         });
 
-    grid = updatedGrid;
+    ship.position.forEach(pos => {
+      const [row, col] = pos;
+      const hasCell = grid.has(row.toLocaleLowerCase());
+      console.log(ship.position)
+      console.log(pos)
+      console.log(row)
+      console.log(col)
+      console.log(vertical, 'vertical')
+      if (parseInt(col, 10) < 0) {
+        debugger
+      }
+      if (hasCell) {
+        grid.get(row.toLocaleLowerCase())![col].taken = true;
+      }
+    });
 
     ships.push(ship);
     shipsToAdd.shift();
   }
+
+  console.log(grid);
 
   return ships;
 }
