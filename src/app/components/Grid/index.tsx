@@ -42,8 +42,8 @@ export const Grid: React.FC<Props> = props => {
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   useEffect(() => {
-    console.log(cpuInitialShips)
-    console.log(playerInitialShips)
+    console.log(cpuInitialShips);
+    console.log(playerInitialShips);
     setCpuShips(cpuInitialShips);
     setPlayerShips(playerInitialShips);
   }, []);
@@ -76,8 +76,8 @@ export const Grid: React.FC<Props> = props => {
           const { row, col } = playerGrid[index];
 
           console.log(playerGrid.length);
-          console.log(`coord: ${row}${col}`.toLocaleUpperCase());
-          handleCpuAttack(`${row}${col}`.toLocaleUpperCase());
+          console.log(`coord: ${row}${col}`);
+          handleCpuAttack(`${row}${col}`);
         }
       }
 
@@ -103,8 +103,8 @@ export const Grid: React.FC<Props> = props => {
         const shipIndex = cpuShips.findIndex(({ name }) => ship.name === name);
         const updated = [...cpuShips];
 
-        updated[shipIndex].strikes.push(position);
-
+        updated[shipIndex].strikes.push(position); 
+        console.log(updated[shipIndex].strikes);
         setCpuShips(updated);
       } else {
         // console.log('Missed at ' + position);
@@ -154,7 +154,7 @@ export const Grid: React.FC<Props> = props => {
       <h1>CPU</h1>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
-          const position = `${cell.row}${cell.col}`.toUpperCase();
+          const position = `${cell.row}${cell.col}`;
           return (
             <Cell
               key={cell.index}
@@ -170,7 +170,7 @@ export const Grid: React.FC<Props> = props => {
       <h1>Player</h1>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
-          const position = `${cell.row}${cell.col}`.toUpperCase();
+          const position = `${cell.row}${cell.col}`;
           return (
             <Cell
               key={cell.index}

@@ -7,7 +7,7 @@ function isCellTaken(args) {
   const { shipSize, vertical, grid, letters, rowIndex, columnIndex } = args;
 
   if (vertical) {
-    const cells = range(shipSize, rowIndex + 1);
+    const cells = range(shipSize, rowIndex);
     return cells.some(letterIndex => {
       const row = grid.get(letters[letterIndex]) || [];
       if (!row[columnIndex]) {
@@ -45,16 +45,16 @@ export type PositionArgs = {
 function positionShipVertically(args: PositionArgs) {
   const { letters, rowIndex, columnIndex, shipSize } = args;
 
-  const cells = range(shipSize, rowIndex + 1);
+  const cells = range(shipSize, rowIndex);
 
   const ship: Ship = {
     name: uuidv4(),
-    position: [`${letters[rowIndex]}${columnIndex}`.toUpperCase()],
+    position: [],
     strikes: [],
   };
 
   cells.forEach(letterIndex => {
-    const cellName = `${letters[letterIndex]}${columnIndex}`.toUpperCase();
+    const cellName = `${letters[letterIndex]}${columnIndex}`;
     ship.position.push(cellName);
   });
 
@@ -74,7 +74,7 @@ function positionShipHorizontally(args: PositionArgs) {
   };
 
   while (size > 0) {
-    ship.position.push(`${letters[rowIndex]}${i}`.toUpperCase());
+    ship.position.push(`${letters[rowIndex]}${i}`);
     i += 1;
     size -= 1;
   }
@@ -144,7 +144,7 @@ export function getInitialShips(rows: number, cols: number) {
   while (shipsToAdd.length > 0) {
     const rowIndex = Math.round(Math.random() * (rows - 1));
     const columnIndex = Math.round(Math.random() * (cols - 1));
-    console.log(columnIndex, 'columnIndex')
+
     const row = grid.get(letters[rowIndex]);
     const shipSize = shipsToAdd[0].size;
 
@@ -182,18 +182,7 @@ export function getInitialShips(rows: number, cols: number) {
 
     ship.position.forEach(pos => {
       const [row, col] = pos;
-      const hasCell = grid.has(row.toLocaleLowerCase());
-      console.log(ship.position)
-      console.log(pos)
-      console.log(row)
-      console.log(col)
-      console.log(vertical, 'vertical')
-      if (parseInt(col, 10) < 0) {
-        debugger
-      }
-      if (hasCell) {
-        grid.get(row.toLocaleLowerCase())![col].taken = true;
-      }
+      grid.get(row)![col].taken = true;
     });
 
     ships.push(ship);

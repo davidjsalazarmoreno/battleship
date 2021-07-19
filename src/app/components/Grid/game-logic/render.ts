@@ -3,7 +3,14 @@ import { cellHasFailedShot, getShip } from './core';
 import { Ship } from './types';
 
 function getShipStyles(ship: Ship, gridPosition: string, isCpu: boolean) {
-  const isSunk = ship.strikes.sort().join('') === ship.position.join('');
+  const colors = {
+    1: 'yellow',
+    2: 'purple',
+    3: 'brown',
+    4: 'gray',
+    5: 'cyan',
+  };
+  const isSunk = ship.strikes.length === ship.position.length;
   if (isSunk) {
     return {
       backgroundColor: 'black',
@@ -14,9 +21,10 @@ function getShipStyles(ship: Ship, gridPosition: string, isCpu: boolean) {
   return ship.strikes.includes(gridPosition)
     ? {
         backgroundColor: 'orange',
+        color: 'red',
       }
     : {
-        backgroundColor: isCpu ? 'blue' : 'gray',
+        backgroundColor: isCpu ? 'blue' : colors[ship.position.length],
       };
 }
 

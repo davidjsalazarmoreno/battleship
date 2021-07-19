@@ -6,7 +6,7 @@ export function shotAllowed(
   ships: Ship[],
   shots: Set<string>,
 ) {
-  const pos = position.toUpperCase();
+  const pos = position;
   const ship = getShip(pos, ships);
   const shipHasStrike = ship && ship.strikes.includes(pos);
   if (shipHasStrike) {

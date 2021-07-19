@@ -24,7 +24,7 @@ export function getGridArray(dimensions: number) {
     array[index] = { value: null, index, row: '', col: 0 };
 
     array[index].row = letters[0];
-    array[index].col = col + 1;
+    array[index].col = col;
 
     col += 1;
     row += 1;
