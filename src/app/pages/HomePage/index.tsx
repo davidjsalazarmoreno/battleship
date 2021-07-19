@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { NavBar } from 'app/components/NavBar';
 import { PageWrapper } from 'app/components/PageWrapper';
 import { Grid } from 'app/components/Grid';
 
@@ -14,7 +13,6 @@ export function HomePage() {
           content="A React Boilerplate application homepage"
         />
       </Helmet>
-      <NavBar />
       <PageWrapper>
         <Grid rows={10} columns={10} />
       </PageWrapper>
