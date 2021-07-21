@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageWrapper } from 'app/components/PageWrapper';
 import { Grid } from 'app/components/Grid';
 
-export function HomePage() {
+export function BattleshipPage() {
   return (
     <>
       <Helmet>

@@ -14,7 +14,7 @@ export function HomePage() {
         />
       </Helmet>
       <PageWrapper>
-        <StartGame />
+        {/* <StartGame /> */}
       </PageWrapper>
     </>
   );

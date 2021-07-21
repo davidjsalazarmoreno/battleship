@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { P } from './P';
 import { Helmet } from 'react-helmet-async';
 import { StyleConstants } from 'styles/StyleConstants';
 
@@ -19,7 +18,7 @@ export function NotFoundPage() {
           </span>
           4
         </Title>
-        <P>Page not found.</P>
+        <p>page not found.</p>
       </Wrapper>
     </>
   );

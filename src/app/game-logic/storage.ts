@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Score } from './types';
 
 export type StorageKeys = '@battleship/scoreboard';
 
@@ -7,7 +8,8 @@ export type StorageKeys = '@battleship/scoreboard';
  * Source https://usehooks.com/useLocalStorage/
  * @export
  */
-export function useLocalStorage(key: StorageKeys, initialValue = []) {
+export function useLocalStorage(initialValue: Score[] = []) {
+  const key: StorageKeys = '@battleship/scoreboard';
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key);

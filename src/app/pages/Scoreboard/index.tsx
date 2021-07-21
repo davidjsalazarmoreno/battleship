@@ -14,7 +14,7 @@ export function Scoreboard() {
         />
       </Helmet>
       <PageWrapper>
-        <Score />
+        {/* <Score /> */}
       </PageWrapper>
     </>
   );

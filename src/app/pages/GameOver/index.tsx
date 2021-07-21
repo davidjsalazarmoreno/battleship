@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageWrapper } from 'app/components/PageWrapper';
-import { Grid } from 'app/components/Grid';
+import { GameOver } from 'app/components/GameOver';
 
-export function HomePage() {
+export function GameOverPage() {
   return (
     <>
       <Helmet>
@@ -14,7 +14,7 @@ export function HomePage() {
         />
       </Helmet>
       <PageWrapper>
-        <Gameover />
+        <GameOver />
       </PageWrapper>
     </>
   );

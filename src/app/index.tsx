@@ -15,7 +15,8 @@ import { GlobalStyle } from '../styles/global-styles';
 import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './pages/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
-import { GameOver } from './pages/GameOver';
+import { GameOverPage } from './pages/GameOver';
+import { BattleshipPage } from './pages/Battleship';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -30,12 +31,12 @@ export function App() {
       </Helmet>
 
       <Switch>
-        <Route exact path={process.env.PUBLIC_URL + '/'} component={HomePage} />
+        <Route exact path={process.env.PUBLIC_URL + '/'} component={BattleshipPage} />
 
         <Route
           exact
           path={process.env.PUBLIC_URL + '/game-over'}
-          component={GameOver}
+          component={GameOverPage}
         />
         <Route component={NotFoundPage} />
       </Switch>

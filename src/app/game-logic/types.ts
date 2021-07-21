@@ -10,3 +10,10 @@ export type CellModel = {
   row: string;
   col: number;
 };
+
+export type Score = {
+  result: 'tie' | 'defeat' | 'victory';
+  cpuShips: number;
+  playerShips: number;
+  turnLeft: number;
+};

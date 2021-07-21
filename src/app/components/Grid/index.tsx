@@ -47,7 +47,6 @@ export const Grid: React.FC<Props> = props => {
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   const [scoreboard, setScoreboard] = useLocalStorage(
-    '@battleship/scoreboard',
     [],
   );
 
