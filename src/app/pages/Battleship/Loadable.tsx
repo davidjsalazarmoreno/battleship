@@ -17,7 +17,7 @@ const LoadingWrapper = styled.div`
 
 export const HomePage = lazyLoad(
   () => import('./index'),
-  module => module.HomePage,
+  module => module.BattleshipPage,
   {
     fallback: (
       <LoadingWrapper>

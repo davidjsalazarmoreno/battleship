@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { PageWrapper } from 'app/components/PageWrapper';
 import { Grid } from 'app/components/Grid';
 
-export function HomePage() {
+export function Scoreboard() {
   return (
     <>
       <Helmet>
@@ -13,7 +13,7 @@ export function HomePage() {
           content="A React Boilerplate application homepage"
         />
       </Helmet>
-      <PageWrapper>{/* <StartGame /> */}</PageWrapper>
+      <PageWrapper>{/* <Score /> */}</PageWrapper>
     </>
   );
 }
