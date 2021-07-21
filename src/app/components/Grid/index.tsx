@@ -12,7 +12,7 @@ import {
   Ship,
   shotAllowed,
   useLocalStorage,
-} from './game-logic';
+} from '../../game-logic';
 
 export type Props = {
   rows: number;
