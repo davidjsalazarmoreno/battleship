@@ -14,7 +14,7 @@ export function HomePage() {
         />
       </Helmet>
       <PageWrapper>
-        <Gameover />
+        <Grid rows={10} columns={10} />
       </PageWrapper>
     </>
   );
