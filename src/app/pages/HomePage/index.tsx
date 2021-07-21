@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PageWrapper } from 'app/components/PageWrapper';
-import { Grid } from 'app/components/Grid';
+import { StartGame } from 'app/components/StartGame';
 
 export function HomePage() {
   return (
@@ -13,7 +13,9 @@ export function HomePage() {
           content="A React Boilerplate application homepage"
         />
       </Helmet>
-      <PageWrapper>{/* <StartGame /> */}</PageWrapper>
+      <PageWrapper>
+        <StartGame />
+      </PageWrapper>
     </>
   );
 }

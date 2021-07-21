@@ -31,7 +31,8 @@ export function App() {
       </Helmet>
 
       <Switch>
-        <Route exact path="/" component={BattleshipPage} />
+        <Route exact path="/" component={HomePage} />
+        <Route path="/battleship" component={BattleshipPage} />
         <Route path="/game-over" component={GameOverPage} />
         <Route component={NotFoundPage} />
       </Switch>
