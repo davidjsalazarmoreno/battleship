@@ -1,5 +1,6 @@
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
+import { ConfigurationState } from 'entities/configuration';
 import { ScoreState } from 'entities/score';
 
 /* 
@@ -8,4 +9,5 @@ import { ScoreState } from 'entities/score';
 */
 export interface RootState {
   score: ScoreState;
+  configuration: ConfigurationState;
 }

@@ -13,9 +13,10 @@ import {
   shotAllowed,
   useLocalStorage,
 } from '../../game-logic';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addMatchResult, resetMatchResult } from 'entities/score';
 import { MatchResults, Score } from 'app/game-logic/types';
+import { RootState } from 'types/RootState';
 
 export type Props = {
   rows: number;
@@ -37,6 +38,7 @@ const defaultGameLoop: GameLoop = {
 };
 
 export const Grid: React.FC<Props> = props => {
+  const turns = useSelector((state: RootState) => state.configuration.turns);
   const history = useHistory();
   const { rows, columns } = props;
   const [grid, setGrid] = useState(getGridArray(rows * columns));
@@ -73,9 +75,12 @@ export const Grid: React.FC<Props> = props => {
     console.log(playerInitialShips);
     setCpuShips(cpuInitialShips);
     setPlayerShips(playerInitialShips);
-    setGameLoop(defaultGameLoop);
+    setGameLoop({
+      ...defaultGameLoop,
+      turnsLeft: turns!,
+    });
     setGrid(getGridArray(rows * columns));
-  }, []);
+  }, [columns, rows, turns]);
 
   useEffect(() => {
     dispatch(resetMatchResult());

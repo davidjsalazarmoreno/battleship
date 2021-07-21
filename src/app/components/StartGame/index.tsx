@@ -3,11 +3,21 @@ import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
 import { Score } from 'app/game-logic/types';
 import { Link, useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  resetGameDifficulty,
+  selectGameDifficulty,
+} from 'entities/configuration';
+import { useDispatch } from 'react-redux';
 
 export function StartGame() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [turns, setTurns] = useState<number | null>(null);
+
+  useEffect(() => {
+    dispatch(resetGameDifficulty());
+  }, [dispatch]);
 
   const handleDifficultySelection = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -19,6 +29,7 @@ export function StartGame() {
 
   const handleGameStart = () => {
     console.log(turns);
+    dispatch(selectGameDifficulty(turns!));
     history.push('/battleship');
   };
 
