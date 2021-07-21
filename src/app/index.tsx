@@ -16,6 +16,7 @@ import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 import { BattleshipPage } from './pages/Battleship';
+import { GameOverPage } from './pages/GameOver';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -31,6 +32,7 @@ export function App() {
 
       <Switch>
         <Route exact path="/" component={BattleshipPage} />
+        <Route path="/game-over" component={GameOverPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

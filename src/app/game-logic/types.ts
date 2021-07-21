@@ -11,9 +11,11 @@ export type CellModel = {
   col: number;
 };
 
+export type MatchResults = 'tie' | 'defeat' | 'victory';
+
 export type Score = {
-  result: 'tie' | 'defeat' | 'victory';
+  result: MatchResults;
   cpuShips: number;
   playerShips: number;
-  turnLeft: number;
+  turnsLeft: number;
 };

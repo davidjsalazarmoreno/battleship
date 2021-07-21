@@ -13,6 +13,9 @@ import {
   shotAllowed,
   useLocalStorage,
 } from '../../game-logic';
+import { useDispatch } from 'react-redux';
+import { addMatchResult, resetMatchResult } from 'entities/score';
+import { MatchResults, Score } from 'app/game-logic/types';
 
 export type Props = {
   rows: number;
@@ -36,7 +39,7 @@ const defaultGameLoop: GameLoop = {
 export const Grid: React.FC<Props> = props => {
   const history = useHistory();
   const { rows, columns } = props;
-  const grid = getGridArray(rows * columns);
+  const [grid, setGrid] = useState(getGridArray(rows * columns));
 
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
   const [playerShips, setPlayerShips] = useState<Ship[]>([]);
@@ -47,53 +50,53 @@ export const Grid: React.FC<Props> = props => {
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
 
   const [scoreboard, setScoreboard] = useLocalStorage([]);
+  const dispatch = useDispatch();
+
+  function getMatchResultType(match: GameLoop): MatchResults {
+    if (gameLoop.turnsLeft === 0) {
+      return 'tie';
+    }
+
+    if (gameLoop.playerShips === 0) {
+      return 'defeat';
+    }
+
+    if (gameLoop.cpuShips === 0) {
+      return 'victory';
+    }
+
+    return 'tie';
+  }
 
   useEffect(() => {
     console.log(cpuInitialShips);
     console.log(playerInitialShips);
     setCpuShips(cpuInitialShips);
     setPlayerShips(playerInitialShips);
+    setGameLoop(defaultGameLoop);
+    setGrid(getGridArray(rows * columns));
   }, []);
 
   useEffect(() => {
-    if (gameLoop.turnsLeft === 0) {
-      // Gameover here, tie
-      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
-      scoreboard.push({
-        result: 'tie',
-        cpuShips: gameLoop.cpuShips,
-        playerShips: gameLoop.playerShips,
-        turnsLeft: gameLoop.turnsLeft,
-      });
-      setScoreboard(scoreboard);
-      history.push('/game-over');
-      return;
-    }
+    dispatch(resetMatchResult());
+  }, [dispatch]);
 
-    if (gameLoop.playerShips === 0) {
-      // Gameover here, defeat
-      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
-      scoreboard.push({
-        result: 'defeat',
+  useEffect(() => {
+    const matchEnded =
+      gameLoop.turnsLeft === 0 ||
+      gameLoop.playerShips === 0 ||
+      gameLoop.cpuShips === 0;
+    if (matchEnded) {
+      const result: Score = {
+        result: getMatchResultType(gameLoop),
         cpuShips: gameLoop.cpuShips,
         playerShips: gameLoop.playerShips,
         turnsLeft: gameLoop.turnsLeft,
-      });
-      setScoreboard(scoreboard);
-      history.push('/game-over');
-      return;
-    }
+      };
 
-    if (gameLoop.cpuShips === 0) {
-      // Gameover here, victory,
       setGameLoop(loop => ({ ...loop, cpuTurn: false }));
-      scoreboard.push({
-        result: 'victory',
-        cpuShips: gameLoop.cpuShips,
-        playerShips: gameLoop.playerShips,
-        turnsLeft: gameLoop.turnsLeft,
-      });
-      setScoreboard(scoreboard);
+      setScoreboard([result, ...scoreboard]);
+      dispatch(addMatchResult(result));
       history.push('/game-over');
       return;
     }
