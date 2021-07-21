@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
 import { Score } from 'app/game-logic/types';
+import { Link } from 'react-router-dom';
 
 export type Props = {
   score: Score;
@@ -17,6 +18,7 @@ export function GameOver(props: Props) {
       <Wrapper>
         <Title>Last match result: {props.score.result}</Title>
         Game Over
+        <Link to="/">Intentar de nuevo</Link>
       </Wrapper>
     </>
   );
