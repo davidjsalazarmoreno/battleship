@@ -6,6 +6,7 @@ export {
 } from './core';
 export { shotAllowed } from './events';
 // export { getInitialShips } from './initialization';
+export { useBattleship } from './hooks';
 export {
   getBaseCellStyles,
   getCpuCellStyle,
