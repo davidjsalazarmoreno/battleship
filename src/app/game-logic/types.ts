@@ -1,7 +1,11 @@
+export type MatchResults = 'tie' | 'defeat' | 'victory';
+export type MatchDifficulty = 'easy' | 'medium' | 'hard';
+
 export type Ship = {
   position: string[];
   strikes: string[];
   name: string;
+  isSunk: boolean;
 };
 
 export type CellModel = {
@@ -11,11 +15,10 @@ export type CellModel = {
   col: number;
 };
 
-export type MatchResults = 'tie' | 'defeat' | 'victory';
-
 export type Score = {
   result: MatchResults;
   cpuShips: number;
   playerShips: number;
   turnsLeft: number;
+  difficulty: MatchDifficulty;
 };
