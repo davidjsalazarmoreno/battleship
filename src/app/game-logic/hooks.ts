@@ -49,7 +49,9 @@ function attack(args: {
   const target = getShipIndex(position, enemyShips);
   if (target > -1) {
     const shipsAfterStrike = [...enemyShips];
-    shipsAfterStrike[target].strikes.push(position);
+    const ship = shipsAfterStrike[target];
+    ship.strikes.push(position);
+    ship.isSunk = ship.strikes.length === ship.position.length;
     return shipsAfterStrike;
   } else {
     const missedShots = new Set(attackerShots);
@@ -92,19 +94,6 @@ export function useBattleship(args: UseBattleshipArgs) {
     onCpuTurn();
   }, [matchEnded, cpuTurn, grid]);
 
-  const onCpuTurn = () => {
-    if (cpuTurn) {
-      const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
-      if (playerGrid.length) {
-        let index = getRandomGridPosition(playerGrid.length);
-        if (playerGrid[index]) {
-          const { row, col } = playerGrid[index];
-          handleAttack(`${row}${col}`, true);
-        }
-      }
-    }
-  };
-
   const handlePlayerAttack = (position: string) => {
     const result = attack({
       position,
@@ -132,7 +121,6 @@ export function useBattleship(args: UseBattleshipArgs) {
       attackerShots: shotsByCpu,
     });
 
-    // Strikes
     if (Array.isArray(result)) {
       setCpuShips(result);
     } else {
@@ -166,6 +154,19 @@ export function useBattleship(args: UseBattleshipArgs) {
       handleCpuAttack(position);
     } else {
       handlePlayerAttack(position);
+    }
+  };
+
+  const onCpuTurn = () => {
+    if (cpuTurn) {
+      const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
+      if (playerGrid.length) {
+        let index = getRandomGridPosition(playerGrid.length);
+        if (playerGrid[index]) {
+          const { row, col } = playerGrid[index];
+          handleAttack(`${row}${col}`, true);
+        }
+      }
     }
   };
 

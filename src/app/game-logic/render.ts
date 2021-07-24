@@ -10,8 +10,7 @@ function getShipStyles(ship: Ship, gridPosition: string, isCpu: boolean) {
     4: 'gray',
     5: 'cyan',
   };
-  const isSunk = ship.strikes.length === ship.position.length;
-  if (isSunk) {
+  if (ship.isSunk) {
     return {
       backgroundColor: 'black',
       color: 'red',
