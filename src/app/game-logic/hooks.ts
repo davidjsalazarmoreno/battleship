@@ -177,7 +177,7 @@ export function useGameLoop(turns: number) {
       ...loop,
       cpuTurn: isCpuNext,
       turnsLeft: loop.turnsLeft - 1,
-      [shipsAfterStrike]: enemyShips.filter(ship => ship.isSunk).length,
+      [shipsAfterStrike]: enemyShips.filter(ship => !ship.isSunk).length,
     }));
   };
 
