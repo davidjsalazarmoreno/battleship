@@ -50,6 +50,7 @@ export function StartGame() {
         <button disabled={!turns} onClick={handleGameStart}>
           Start game
         </button>
+        <Link to="/scoreboard">Scoreboard</Link>
       </Wrapper>
     </>
   );

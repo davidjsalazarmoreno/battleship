@@ -35,7 +35,9 @@ export const Grid: React.FC<Props> = props => {
     turns,
     initialShips: initialShips,
   });
-  const [scoreboard, setScoreboard] = useLocalStorage([]);
+  const { storedValue: scoreboard, setValue: setScoreboard } = useLocalStorage(
+    [],
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {

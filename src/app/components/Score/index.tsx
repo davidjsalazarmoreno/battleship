@@ -1,21 +1,58 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { P } from './P';
 import { Helmet } from 'react-helmet-async';
-import { Score as ScoreCore } from 'app/game-logic/types';
+import { useLocalStorage } from 'app/game-logic';
+import { Link } from 'react-router-dom';
 
-export type Props = ScoreCore;
+export function Score() {
+  const { storedValue: scoreboard } = useLocalStorage([]);
 
-export function Score(props: Props) {
+  if (scoreboard.length === 0) {
+    return (
+      <>
+        <Helmet>
+          <title>Scoreboard</title>
+          <meta name="description" content="No score!" />
+        </Helmet>
+        <Wrapper>
+          There's not score to show, please go back to start screen and play a
+          match :-)
+        </Wrapper>
+      </>
+    );
+  }
+
+  const scores = scoreboard.map(score => {
+    return (
+      <tr>
+        {Object.values(score).map((value, index) => (
+          <td key={value + '' + index}>{value}</td>
+        ))}
+      </tr>
+    );
+  });
+
   return (
     <>
       <Helmet>
-        <title>404 Page Not Found</title>
-        <meta name="description" content="Page not found" />
+        <title>{`${scoreboard.length} matches`}</title>
+        <meta name="description" content={`${scoreboard.length} matches!`} />
       </Helmet>
       <Wrapper>
-        {/* <Title>Last match result: {props.result}</Title>
-        <P>Game Over.</P> */}
+        <table>
+          <thead>
+            <tr>
+              <th>Result</th>
+              <th>Cpu ships</th>
+              <th>Player Ships</th>
+              <th>Turns left</th>
+              <th>Difficulty</th>
+            </tr>
+          </thead>
+
+          <tbody>{scores}</tbody>
+        </table>
+        <Link to="/">Start page</Link>
       </Wrapper>
     </>
   );
@@ -28,15 +65,4 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   min-height: 320px;
-`;
-
-const Title = styled.div`
-  margin-top: -8vh;
-  font-weight: bold;
-  color: black;
-  font-size: 3.375rem;
-
-  span {
-    font-size: 3.125rem;
-  }
 `;
