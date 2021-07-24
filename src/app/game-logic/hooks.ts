@@ -1,67 +1,20 @@
 import { useEffect, useState } from 'react';
+import { defaultGameLoop } from './constants';
 import {
+  attack,
+  getDifficulty,
   getGridArray,
+  getMatchResultType,
   getRandomGridPosition,
-  getShip,
-  getShipIndex,
 } from './core';
-import { shotAllowed } from './events';
+import { getValidCellsToShot, shotAllowed } from './events';
 import { getInitialShips } from './initialization';
-import { useLocalStorage } from './storage';
-import { MatchDifficulty, MatchResults, Score, Ship } from './types';
-
-// CPU
-export const cpuInitialShips: Ship[] = getInitialShips(10, 10);
-
-// Player
-export const playerInitialShips: Ship[] = getInitialShips(10, 10);
-
-export type UseBattleshipArgs = {
-  rows: number;
-  columns: number;
-  turns: number;
-};
-
-function getValidCellsToShot(grid, ships, shots) {
-  return grid.filter(cell => {
-    return shotAllowed(`${cell.row}${cell.col}`, ships, shots) === true;
-  });
-}
-
-/**
- * Isolates the ship attack logic, if we get an
- * array of ships the attack was successful
- *
- * @param {{
- *   position: string;
- *   enemyShips: Ship[];
- *   attackerShots: Set<string>;
- * }} args
- * @return {*}  {(Set<string> | Ship[])}
- */
-function attack(args: {
-  position: string;
-  enemyShips: Ship[];
-  attackerShots: Set<string>;
-}): Set<string> | Ship[] {
-  const { position, enemyShips, attackerShots } = args;
-
-  const target = getShipIndex(position, enemyShips);
-  if (target > -1) {
-    const shipsAfterStrike = [...enemyShips];
-    const ship = shipsAfterStrike[target];
-    ship.strikes.push(position);
-    ship.isSunk = ship.strikes.length === ship.position.length;
-    return shipsAfterStrike;
-  } else {
-    const missedShots = new Set(attackerShots);
-    missedShots.add(position);
-    return missedShots;
-  }
-}
+import { getCpuCellStyle, getPlayerCellStyle } from './render';
+import { GameLoop, Score, Ship, UseBattleshipArgs } from './types';
 
 export function useBattleship(args: UseBattleshipArgs) {
   const { rows, columns, turns } = args;
+
   const [grid, setGrid] = useState(getGridArray(rows * columns));
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
   const [playerShips, setPlayerShips] = useState<Ship[]>([]);
@@ -69,8 +22,6 @@ export function useBattleship(args: UseBattleshipArgs) {
   const [shotsByCpu, setShotsByCpu] = useState<Set<string>>(new Set());
   const [shotsByPlayer, setShotsByPlayer] = useState<Set<string>>(new Set());
 
-  // pa fuera
-  const [scoreboard, setScoreboard] = useLocalStorage([]);
   const {
     matchEnded,
     cpuTurn,
@@ -80,13 +31,12 @@ export function useBattleship(args: UseBattleshipArgs) {
   } = useGameLoop(100);
 
   useEffect(() => {
-    setCpuShips(cpuInitialShips);
-    setPlayerShips(playerInitialShips);
+    setCpuShips(getInitialShips(10, 10));
+    setPlayerShips(getInitialShips(10, 10));
     setGrid(getGridArray(rows * columns));
   }, [columns, rows, turns]);
 
   useEffect(() => {
-    // Outside
     if (matchEnded) {
       return;
     }
@@ -114,7 +64,6 @@ export function useBattleship(args: UseBattleshipArgs) {
   };
 
   const handleCpuAttack = (position: string) => {
-    // Return boleans to avoid unnecesary renders
     const result = attack({
       position,
       enemyShips: playerShips,
@@ -122,9 +71,9 @@ export function useBattleship(args: UseBattleshipArgs) {
     });
 
     if (Array.isArray(result)) {
-      setCpuShips(result);
+      setPlayerShips(result);
     } else {
-      setShotsByPlayer(result);
+      setShotsByCpu(result);
     }
 
     nextTurn({
@@ -157,6 +106,14 @@ export function useBattleship(args: UseBattleshipArgs) {
     }
   };
 
+  const getCellStyles = (position: string, isCpu = false) => {
+    if (isCpu) {
+      return getPlayerCellStyle(position, cpuShips, shotsByPlayer);
+    } else {
+      return getPlayerCellStyle(position, playerShips, shotsByCpu);
+    }
+  };
+
   const onCpuTurn = () => {
     if (cpuTurn) {
       const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
@@ -173,55 +130,12 @@ export function useBattleship(args: UseBattleshipArgs) {
   // Public API
   return {
     matchEnded,
+    grid,
+    turnsLeft,
     handleAttack,
+    getCellStyles,
     ...gameLoopPublicApi,
   };
-}
-
-// TODO: To types and constants
-export type GameLoop = {
-  cpuTurn: boolean;
-  turnsLeft: number;
-  playerShips: number;
-  cpuShips: number;
-};
-
-const defaultGameLoop: GameLoop = {
-  cpuTurn: false,
-  turnsLeft: 50,
-  playerShips: 20,
-  cpuShips: 20,
-};
-function getMatchResultType(match: GameLoop): MatchResults {
-  if (match.turnsLeft === 0) {
-    return 'tie';
-  }
-
-  if (match.playerShips === 0) {
-    return 'defeat';
-  }
-
-  if (match.cpuShips === 0) {
-    return 'victory';
-  }
-
-  return 'tie';
-}
-
-function getDifficulty(turns: number): MatchDifficulty {
-  if (turns === 1000) {
-    return 'easy';
-  }
-
-  if (turns === 100) {
-    return 'medium';
-  }
-
-  if (turns === 50) {
-    return 'hard';
-  }
-
-  return 'easy';
 }
 
 export function useGameLoop(turns: number) {
