@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Cell } from './Cell';
 import { useHistory } from 'react-router-dom';
-import {
-  getPlayerCellStyle,
-  useBattleship,
-  useLocalStorage,
-} from 'app/game-logic';
+import { useBattleship, useLocalStorage } from 'app/game-logic';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMatchResult, resetMatchResult } from 'entities/score';
 import { RootState } from 'types/RootState';
@@ -53,14 +49,16 @@ export const Grid: React.FC<Props> = props => {
 
   return (
     <>
-      <h1>{matchEnded ? '' : `Turns left: ${turnsLeft}`}</h1>
+      <h1 data-testid="turns-left">
+        {matchEnded ? '' : `Turns left: ${turnsLeft}`}
+      </h1>
       <h1>CPU</h1>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
           return (
             <Cell
-              key={cell.index}
+              key={position}
               {...cell}
               style={getCellStyles(position, true)}
               onClick={() => handleAttack(position)}
@@ -75,7 +73,7 @@ export const Grid: React.FC<Props> = props => {
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
           return (
-            <Cell key={cell.index} {...cell} style={getCellStyles(position)} />
+            <Cell key={position} {...cell} style={getCellStyles(position)} />
           );
         })}
       </Wrapper>

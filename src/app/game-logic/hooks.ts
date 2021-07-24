@@ -28,11 +28,11 @@ export function useBattleship(args: UseBattleshipArgs) {
     turnsLeft,
     nextTurn,
     ...gameLoopPublicApi
-  } = useGameLoop(100);
+  } = useGameLoop(turns);
 
   useEffect(() => {
-    setCpuShips(getInitialShips(10, 10));
-    setPlayerShips(getInitialShips(10, 10));
+    setCpuShips(getInitialShips(rows, columns));
+    setPlayerShips(getInitialShips(rows, columns));
     setGrid(getGridArray(rows * columns));
   }, [columns, rows, turns]);
 
