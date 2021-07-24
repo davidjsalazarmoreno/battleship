@@ -22,3 +22,16 @@ export type Score = {
   turnsLeft: number;
   difficulty: MatchDifficulty;
 };
+
+export type GameLoop = {
+  cpuTurn: boolean;
+  turnsLeft: number;
+  playerShips: number;
+  cpuShips: number;
+};
+
+export type UseBattleshipArgs = {
+  rows: number;
+  columns: number;
+  turns: number;
+};

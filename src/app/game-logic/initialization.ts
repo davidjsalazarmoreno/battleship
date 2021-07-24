@@ -1,8 +1,6 @@
 import { Ship } from './types';
 import { range, uuidv4 } from './utils';
 
-function rowFactory(cols: number) {}
-
 function isCellTaken(args) {
   const { shipSize, vertical, grid, letters, rowIndex, columnIndex } = args;
 
@@ -51,6 +49,7 @@ function positionShipVertically(args: PositionArgs) {
     name: uuidv4(),
     position: [],
     strikes: [],
+    isSunk: false,
   };
 
   cells.forEach(letterIndex => {
@@ -71,6 +70,7 @@ function positionShipHorizontally(args: PositionArgs) {
     name: uuidv4(),
     position: [],
     strikes: [],
+    isSunk: false,
   };
 
   while (size > 0) {
