@@ -13,7 +13,7 @@ import { getCpuCellStyle, getPlayerCellStyle } from './render';
 import { GameLoop, Score, Ship, UseBattleshipArgs } from './types';
 
 export function useBattleship(args: UseBattleshipArgs) {
-  const { rows, columns, turns } = args;
+  const { rows, columns, turns, initialShips } = args;
 
   const [grid, setGrid] = useState(getGridArray(rows * columns));
   const [cpuShips, setCpuShips] = useState<Ship[]>([]);
@@ -31,8 +31,14 @@ export function useBattleship(args: UseBattleshipArgs) {
   } = useGameLoop(turns);
 
   useEffect(() => {
-    setCpuShips(getInitialShips(rows, columns));
-    setPlayerShips(getInitialShips(rows, columns));
+    if (initialShips) {
+      setCpuShips(initialShips?.cpu!);
+      setPlayerShips(initialShips?.player!);
+    } else {
+      setCpuShips(getInitialShips(rows, columns));
+      setPlayerShips(getInitialShips(rows, columns));
+    }
+
     setGrid(getGridArray(rows * columns));
   }, [columns, rows, turns]);
 

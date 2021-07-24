@@ -4,13 +4,18 @@ import { CellModel } from '../../../game-logic/types';
 
 export type Props = {
   style: CSSProperties;
+  testIdPrefix: string;
   onClick?: Function;
 } & CellModel;
 
 export const Cell: React.FC<Props> = props => {
-  const { onClick = () => '' } = props;
+  const { onClick = () => '', testIdPrefix } = props;
   return (
-    <Wrapper style={props.style} onClick={() => onClick()}>
+    <Wrapper
+      data-testid={`${testIdPrefix}-${props.row}${props.col}`}
+      style={props.style}
+      onClick={() => onClick()}
+    >
       {`${props.row}${props.col}`.toUpperCase()}
     </Wrapper>
   );

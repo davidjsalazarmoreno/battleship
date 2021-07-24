@@ -34,4 +34,8 @@ export type UseBattleshipArgs = {
   rows: number;
   columns: number;
   turns: number;
+  initialShips?: {
+    cpu?: Ship[];
+    player?: Ship[];
+  };
 };

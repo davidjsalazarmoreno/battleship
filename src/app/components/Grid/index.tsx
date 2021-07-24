@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Cell } from './Cell';
 import { useHistory } from 'react-router-dom';
-import { useBattleship, useLocalStorage } from 'app/game-logic';
+import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMatchResult, resetMatchResult } from 'entities/score';
 import { RootState } from 'types/RootState';
@@ -10,10 +10,14 @@ import { RootState } from 'types/RootState';
 export type Props = {
   rows: number;
   columns: number;
+  initialShips?: {
+    cpu?: Ship[];
+    player?: Ship[];
+  };
 };
 
 export const Grid: React.FC<Props> = props => {
-  const { rows, columns } = props;
+  const { rows, columns, initialShips } = props;
   const turns = useSelector(
     (state: RootState) => state.configuration.turns || 50,
   );
@@ -29,6 +33,7 @@ export const Grid: React.FC<Props> = props => {
     rows,
     columns,
     turns,
+    initialShips: initialShips,
   });
   const [scoreboard, setScoreboard] = useLocalStorage([]);
   const dispatch = useDispatch();
@@ -59,6 +64,7 @@ export const Grid: React.FC<Props> = props => {
           return (
             <Cell
               key={position}
+              testIdPrefix="cpu"
               {...cell}
               style={getCellStyles(position, true)}
               onClick={() => handleAttack(position)}
@@ -73,7 +79,12 @@ export const Grid: React.FC<Props> = props => {
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
           return (
-            <Cell key={position} {...cell} style={getCellStyles(position)} />
+            <Cell
+              key={position}
+              testIdPrefix="player"
+              {...cell}
+              style={getCellStyles(position)}
+            />
           );
         })}
       </Wrapper>
