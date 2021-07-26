@@ -59,7 +59,7 @@ export const Grid: React.FC<Props> = props => {
       <h1 data-testid="turns-left">
         {matchEnded ? '' : `Turns left: ${turnsLeft}`}
       </h1>
-      <h1>CPU</h1>
+      <h1 className="text-xs">CPU</h1>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
