@@ -6,6 +6,7 @@ import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMatchResult, resetMatchResult } from 'entities/score';
 import { RootState } from 'types/RootState';
+import tw from 'twin.macro';
 
 export type Props = {
   rows: number;
@@ -28,7 +29,7 @@ export const Grid: React.FC<Props> = props => {
     turnsLeft,
     handleAttack,
     getScore,
-    getCellStyles,
+    getCellClassName,
   } = useBattleship({
     rows,
     columns,
@@ -68,7 +69,7 @@ export const Grid: React.FC<Props> = props => {
               key={position}
               testIdPrefix="cpu"
               {...cell}
-              style={getCellStyles(position, true)}
+              className={getCellClassName(position, true)}
               onClick={() => handleAttack(position)}
             />
           );
@@ -85,7 +86,7 @@ export const Grid: React.FC<Props> = props => {
               key={position}
               testIdPrefix="player"
               {...cell}
-              style={getCellStyles(position)}
+              className={getCellClassName(position)}
             />
           );
         })}
@@ -96,7 +97,7 @@ export const Grid: React.FC<Props> = props => {
 };
 
 const Wrapper = styled.div<Props>`
-  display: grid;
+  ${tw`grid w-full overflow-hidden select-none lg:w-3/6`}
   grid-template-rows: repeat(${p => p.rows}, 1fr);
   grid-template-columns: repeat(${p => p.columns}, 1fr);
 `;

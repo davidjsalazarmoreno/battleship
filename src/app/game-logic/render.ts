@@ -1,38 +1,31 @@
-import { CSSProperties } from 'react';
 import { cellHasFailedShot, getShip } from './core';
 import { Ship } from './types';
 
-function getShipStyles(ship: Ship, gridPosition: string, isCpu: boolean) {
-  const colors = {
-    1: 'yellow',
-    2: 'purple',
-    3: 'brown',
-    4: 'gray',
-    5: 'cyan',
-  };
+export type CellBaseClassNames = 'cell-default' | 'cell-failed-shot';
+export type ShipClassNames = 'cell-strike' | 'cell-sunk' | 'cell-ship';
+
+function getShipStyles(
+  ship: Ship,
+  gridPosition: string,
+  isCpu: boolean,
+): ShipClassNames | CellBaseClassNames {
   if (ship.isSunk) {
-    return {
-      backgroundColor: 'black',
-      color: 'red',
-    };
+    return 'cell-sunk';
   }
 
   return ship.strikes.includes(gridPosition)
-    ? {
-        backgroundColor: 'orange',
-        color: 'red',
-      }
-    : {
-        backgroundColor: isCpu ? 'blue' : colors[ship.position.length],
-      };
+    ? 'cell-strike'
+    : isCpu
+    ? 'cell-default'
+    : 'cell-ship';
 }
 
-export function getBaseCellStyles(
+export function getClassNames(
   gridPosition: string,
   ships: Ship[],
   shots: Set<string>,
   isCpu: boolean,
-): CSSProperties {
+): CellBaseClassNames | ShipClassNames {
   const ship = getShip(gridPosition, ships);
 
   if (ship) {
@@ -40,28 +33,24 @@ export function getBaseCellStyles(
   }
 
   if (cellHasFailedShot(gridPosition, shots)) {
-    return {
-      backgroundColor: 'white',
-    };
+    return 'cell-failed-shot';
   }
 
-  return {
-    backgroundColor: 'blue',
-  };
+  return 'cell-default';
 }
 
-export function getCpuCellStyle(
+export function getCpuClassNames(
   gridPosition: string,
   ships: Ship[],
   shots: Set<string>,
 ) {
-  return getBaseCellStyles(gridPosition, ships, shots, true);
+  return getClassNames(gridPosition, ships, shots, true);
 }
 
-export function getPlayerCellStyle(
+export function getPlayerClassNames(
   gridPosition: string,
   ships: Ship[],
   shots: Set<string>,
 ) {
-  return getBaseCellStyles(gridPosition, ships, shots, false);
+  return getClassNames(gridPosition, ships, shots, false);
 }

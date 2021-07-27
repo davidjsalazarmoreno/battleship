@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { Score } from 'app/game-logic/types';
 import { Link, useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
@@ -28,7 +27,6 @@ export function StartGame() {
   };
 
   const handleGameStart = () => {
-    console.log(turns);
     dispatch(selectGameDifficulty(turns!));
     history.push('/battleship');
   };
@@ -63,15 +61,4 @@ const Wrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   min-height: 320px;
-`;
-
-const Title = styled.div`
-  margin-top: -8vh;
-  font-weight: bold;
-  color: black;
-  font-size: 3.375rem;
-
-  span {
-    font-size: 3.125rem;
-  }
 `;

@@ -9,7 +9,8 @@ import {
 } from './core';
 import { getValidCellsToShot, shotAllowed } from './events';
 import { getInitialShips } from './initialization';
-import { getCpuCellStyle, getPlayerCellStyle } from './render';
+import { getCpuClassNames, getPlayerClassNames } from './render';
+
 import { GameLoop, Score, Ship, UseBattleshipArgs } from './types';
 
 export function useBattleship(args: UseBattleshipArgs) {
@@ -35,8 +36,12 @@ export function useBattleship(args: UseBattleshipArgs) {
       setCpuShips(initialShips?.cpu!);
       setPlayerShips(initialShips?.player!);
     } else {
-      setCpuShips(getInitialShips(rows, columns));
-      setPlayerShips(getInitialShips(rows, columns));
+      const cpus = getInitialShips(rows, columns);
+      const pls = getInitialShips(rows, columns);
+      console.log(cpus, 'cpus');
+      console.log(pls, 'pls');
+      setCpuShips(cpus);
+      setPlayerShips(pls);
     }
 
     setGrid(getGridArray(rows * columns));
@@ -112,11 +117,11 @@ export function useBattleship(args: UseBattleshipArgs) {
     }
   };
 
-  const getCellStyles = (position: string, isCpu = false) => {
+  const getCellClassName = (position: string, isCpu = false) => {
     if (isCpu) {
-      return getPlayerCellStyle(position, cpuShips, shotsByPlayer);
+      return getCpuClassNames(position, cpuShips, shotsByPlayer);
     } else {
-      return getPlayerCellStyle(position, playerShips, shotsByCpu);
+      return getPlayerClassNames(position, playerShips, shotsByCpu);
     }
   };
 
@@ -139,7 +144,7 @@ export function useBattleship(args: UseBattleshipArgs) {
     grid,
     turnsLeft,
     handleAttack,
-    getCellStyles,
+    getCellClassName,
     ...gameLoopPublicApi,
   };
 }
