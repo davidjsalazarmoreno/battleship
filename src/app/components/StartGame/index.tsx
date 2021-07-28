@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   resetGameDifficulty,
   selectGameDifficulty,
@@ -13,7 +13,6 @@ import { ButtonLink } from '../ButtonLink';
 import tw from 'twin.macro';
 
 export function StartGame() {
-  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
