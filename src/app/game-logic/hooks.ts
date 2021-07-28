@@ -38,8 +38,6 @@ export function useBattleship(args: UseBattleshipArgs) {
     } else {
       const cpus = getInitialShips(rows, columns);
       const pls = getInitialShips(rows, columns);
-      console.log(cpus, 'cpus');
-      console.log(pls, 'pls');
       setCpuShips(cpus);
       setPlayerShips(pls);
     }

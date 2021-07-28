@@ -19,7 +19,6 @@ export function StartGame() {
   }, [dispatch]);
 
   const handleDifficultySelection = (turns: number) => {
-    console.log(turns);
     dispatch(selectGameDifficulty(turns!));
   };
 
