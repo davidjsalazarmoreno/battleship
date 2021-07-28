@@ -7,11 +7,8 @@ export function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Home Page</title>
-        <meta
-          name="description"
-          content="A React Boilerplate application homepage"
-        />
+        <title>Start game</title>
+        <meta name="description" content="Battleship" />
       </Helmet>
       <PageWrapper>
         <StartGame />

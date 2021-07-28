@@ -2,9 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
 import { useLocalStorage } from 'app/game-logic';
-import { Link } from 'react-router-dom';
+import { ButtonLink } from '../ButtonLink';
+import { Title } from '../Title/index';
+import tw from 'twin.macro';
 
-export function Score() {
+export function Scoreboard() {
   const { storedValue: scoreboard } = useLocalStorage([]);
 
   if (scoreboard.length === 0) {
@@ -17,6 +19,7 @@ export function Score() {
         <Wrapper>
           There's not score to show, please go back to start screen and play a
           match :-)
+          <ButtonLink to="/">Start page</ButtonLink>
         </Wrapper>
       </>
     );
@@ -26,7 +29,9 @@ export function Score() {
     return (
       <tr>
         {Object.values(score).map((value, index) => (
-          <td key={value + '' + index}>{value}</td>
+          <td key={`${value}-${index}`} className="p-3 uppercase">
+            {value}
+          </td>
         ))}
       </tr>
     );
@@ -35,34 +40,31 @@ export function Score() {
   return (
     <>
       <Helmet>
-        <title>{`${scoreboard.length} matches`}</title>
-        <meta name="description" content={`${scoreboard.length} matches!`} />
+        <title>{`Matches: ${scoreboard.length}`}</title>
+        <meta name="description" content={`Matches: ${scoreboard.length}`} />
       </Helmet>
       <Wrapper>
+        <Title>Scoreboard</Title>
         <table>
           <thead>
             <tr>
-              <th>Result</th>
-              <th>Cpu ships</th>
-              <th>Player Ships</th>
-              <th>Turns left</th>
-              <th>Difficulty</th>
+              <th className="p-3">Result</th>
+              <th className="p-3">Cpu ships</th>
+              <th className="p-3">Player Ships</th>
+              <th className="p-3">Turns left</th>
+              <th className="p-3">Difficulty</th>
             </tr>
           </thead>
 
           <tbody>{scores}</tbody>
         </table>
-        <Link to="/">Start page</Link>
+        <ButtonLink to="/">Start page</ButtonLink>
       </Wrapper>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  ${tw`flex flex-col items-center justify-center h-screen text-brand-blue-1`}
   min-height: 320px;
 `;

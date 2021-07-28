@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addMatchResult, resetMatchResult } from 'entities/score';
 import { RootState } from 'types/RootState';
 import tw from 'twin.macro';
+import { MatchInformation } from '../MatchInformation';
+import { Title } from '../Title/index';
 
 export type Props = {
   rows: number;
@@ -19,9 +21,7 @@ export type Props = {
 
 export const Grid: React.FC<Props> = props => {
   const { rows, columns, initialShips } = props;
-  const turns = useSelector(
-    (state: RootState) => state.configuration.turns || 50,
-  );
+  const turns = useSelector((state: RootState) => state.configuration.turns);
   const history = useHistory();
   const {
     matchEnded,
@@ -33,7 +33,7 @@ export const Grid: React.FC<Props> = props => {
   } = useBattleship({
     rows,
     columns,
-    turns,
+    turns: turns || 50,
     initialShips: initialShips,
   });
   const { storedValue: scoreboard, setValue: setScoreboard } = useLocalStorage(
@@ -55,12 +55,20 @@ export const Grid: React.FC<Props> = props => {
     dispatch(resetMatchResult());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (turns === null) {
+      history.push('/');
+    }
+  }, [turns, history]);
+
+  if (turns === null) {
+    return null;
+  }
+
   return (
     <>
-      <h1 data-testid="turns-left">
-        {matchEnded ? '' : `Turns left: ${turnsLeft}`}
-      </h1>
-      <h1 className="text-xs">CPU</h1>
+      <MatchInformation matchEnded={matchEnded} turnsLeft={turnsLeft} />
+      <Title>CPU</Title>
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
@@ -77,7 +85,8 @@ export const Grid: React.FC<Props> = props => {
       </Wrapper>
       {/* ./CPU Grid */}
 
-      <h1>Player</h1>
+      <Title>Player</Title>
+
       <Wrapper rows={rows} columns={columns}>
         {grid.map(cell => {
           const position = `${cell.row}${cell.col}`;
@@ -97,7 +106,7 @@ export const Grid: React.FC<Props> = props => {
 };
 
 const Wrapper = styled.div<Props>`
-  ${tw`grid w-full overflow-hidden select-none lg:w-3/6`}
+  ${tw`grid w-full select-none lg:w-4/6`}
   grid-template-rows: repeat(${p => p.rows}, 1fr);
   grid-template-columns: repeat(${p => p.columns}, 1fr);
 `;

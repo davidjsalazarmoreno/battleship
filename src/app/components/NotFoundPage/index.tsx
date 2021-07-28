@@ -1,7 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { P } from './P';
 import { Helmet } from 'react-helmet-async';
+import { Title } from '../Title';
+import { Text } from '../Text/index';
+import tw from 'twin.macro';
+import { ButtonLink } from '../ButtonLink';
 
 export function NotFoundPage() {
   return (
@@ -18,28 +21,15 @@ export function NotFoundPage() {
           </span>
           4
         </Title>
-        <P>Page not found.</P>
+        <Text>Page not found.</Text>
+
+        <ButtonLink to="/">Go to Home Page</ButtonLink>
       </Wrapper>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  ${tw`flex flex-col items-center justify-center h-screen text-brand-blue-1`}
   min-height: 320px;
-`;
-
-const Title = styled.div`
-  margin-top: -8vh;
-  font-weight: bold;
-  color: black;
-  font-size: 3.375rem;
-
-  span {
-    font-size: 3.125rem;
-  }
 `;

@@ -24,11 +24,8 @@ export function GameOverPage() {
   return (
     <>
       <Helmet>
-        <title>Home Page</title>
-        <meta
-          name="description"
-          content="A React Boilerplate application homepage"
-        />
+        <title>Game over</title>
+        <meta name="description" content="Game over" />
       </Helmet>
       <PageWrapper>
         <GameOver score={lastMatch} />

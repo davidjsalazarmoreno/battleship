@@ -1,64 +1,79 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   resetGameDifficulty,
   selectGameDifficulty,
 } from 'entities/configuration';
 import { useDispatch } from 'react-redux';
+import { Title } from '../Title';
+import { ButtonLink } from '../ButtonLink';
+import tw from 'twin.macro';
 
 export function StartGame() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [turns, setTurns] = useState<number | null>(null);
 
   useEffect(() => {
     dispatch(resetGameDifficulty());
   }, [dispatch]);
 
-  const handleDifficultySelection = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    console.log(event.target.value);
-
-    setTurns(parseInt(event.target.value));
-  };
-
-  const handleGameStart = () => {
+  const handleDifficultySelection = (turns: number) => {
+    console.log(turns);
     dispatch(selectGameDifficulty(turns!));
-    history.push('/battleship');
   };
 
   return (
     <>
       <Helmet>
-        <title>Game over</title>
-        <meta name="description" content="Game over" />
+        <title>StartGame</title>
+        <meta name="description" content="Start game" />
       </Helmet>
       <Wrapper>
-        {/* <Title>Last match result: {props.score.result}</Title> */}
-        Game Over
-        <select onChange={handleDifficultySelection}>
-          <option value="1000">Facil (1000 turnos)</option>
-          <option value="100">Medio (100 turnos)</option>
-          <option value="50">Dificil (50 turnos)</option>
-        </select>
-        <button disabled={!turns} onClick={handleGameStart}>
-          Start game
-        </button>
-        <Link to="/scoreboard">Scoreboard</Link>
+        <Title>Welcome to Battleship</Title>
+
+        <Buttons>
+          <ButtonLink
+            to="/battleship"
+            onClick={() => {
+              handleDifficultySelection(1000);
+            }}
+          >
+            Easy (1000 turns)
+          </ButtonLink>
+
+          <ButtonLink
+            to="/battleship"
+            onClick={() => {
+              handleDifficultySelection(100);
+            }}
+          >
+            Medium (100 turns)
+          </ButtonLink>
+
+          <ButtonLink
+            to="/battleship"
+            onClick={() => {
+              handleDifficultySelection(50);
+            }}
+          >
+            Hard (50 turns)
+          </ButtonLink>
+
+          <ButtonLink to="/scoreboard">Scoreboard</ButtonLink>
+        </Buttons>
       </Wrapper>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  ${tw`flex flex-col items-center justify-center h-screen`}
   min-height: 320px;
+`;
+
+const Buttons = styled.div`
+  ${tw`flex flex-col`}
 `;

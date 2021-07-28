@@ -2,7 +2,10 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
 import { Score } from 'app/game-logic/types';
-import { Link } from 'react-router-dom';
+import { ButtonLink } from '../ButtonLink';
+import { Text } from '../Text/index';
+import { Title } from '../Title';
+import tw from 'twin.macro';
 
 export type Props = {
   score: Score;
@@ -16,30 +19,16 @@ export function GameOver(props: Props) {
         <meta name="description" content="Game over" />
       </Helmet>
       <Wrapper>
-        <Title>Last match result: {props.score.result}</Title>
-        Game Over
-        <Link to="/">Intentar de nuevo</Link>
+        <Title>Game Over</Title>
+        <Text>Last match result: {props.score.result}</Text>
+
+        <ButtonLink to="/">Try again</ButtonLink>
       </Wrapper>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  ${tw`flex flex-col items-center justify-center h-screen`}
   min-height: 320px;
-`;
-
-const Title = styled.div`
-  margin-top: -8vh;
-  font-weight: bold;
-  color: black;
-  font-size: 3.375rem;
-
-  span {
-    font-size: 3.125rem;
-  }
 `;
