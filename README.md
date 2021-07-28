@@ -1,3 +1,7 @@
+[![Twitter](https://img.shields.io/twitter/follow/davidjsmoreno.svg?style=social&label=@davidjsmoreno)](https://twitter.com/davidjsmoreno)
+
+![Travis Status](https://img.shields.io/travis/davidjsalazarmoreno/battleship?branch=testing)
+
 # Battleship
 
 ## Setup
