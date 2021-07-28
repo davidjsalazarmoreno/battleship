@@ -1,19 +1,16 @@
 import { Ship } from './types';
 import { range, uuidv4 } from './utils';
 
-function rowFactory(cols: number) {}
-
 function isCellTaken(args) {
   const { shipSize, vertical, grid, letters, rowIndex, columnIndex } = args;
 
   if (vertical) {
+    if (shipSize + rowIndex > 10) {
+      return true;
+    }
     const cells = range(shipSize, rowIndex);
     return cells.some(letterIndex => {
-      const row = grid.get(letters[letterIndex]) || [];
-      if (!row[columnIndex]) {
-        return true;
-      }
-
+      const row = grid.get(letters[letterIndex]);
       if (row[columnIndex].taken === true) {
         return true;
       }
@@ -21,7 +18,10 @@ function isCellTaken(args) {
       return false;
     });
   } else {
-    const row = grid.get(letters[rowIndex]) || [];
+    if (shipSize + columnIndex > 10) {
+      return true;
+    }
+    const row = grid.get(letters[rowIndex]);
     const cells = row.slice(columnIndex);
 
     if (cells.length < shipSize) {
@@ -51,6 +51,7 @@ function positionShipVertically(args: PositionArgs) {
     name: uuidv4(),
     position: [],
     strikes: [],
+    isSunk: false,
   };
 
   cells.forEach(letterIndex => {
@@ -71,6 +72,7 @@ function positionShipHorizontally(args: PositionArgs) {
     name: uuidv4(),
     position: [],
     strikes: [],
+    isSunk: false,
   };
 
   while (size > 0) {
@@ -148,7 +150,7 @@ export function getInitialShips(rows: number, cols: number) {
     const row = grid.get(letters[rowIndex]);
     const shipSize = shipsToAdd[0].size;
 
-    if (!row || row[columnIndex]?.taken) {
+    if (!row || row[columnIndex]?.taken === true) {
       continue;
     }
 
@@ -158,7 +160,7 @@ export function getInitialShips(rows: number, cols: number) {
       vertical,
       grid,
       letters,
-      rowIndex: rowIndex + 1,
+      rowIndex,
       columnIndex,
     });
 
@@ -188,8 +190,6 @@ export function getInitialShips(rows: number, cols: number) {
     ships.push(ship);
     shipsToAdd.shift();
   }
-
-  console.log(grid);
 
   return ships;
 }
