@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
 import { useEffect } from 'react';
 import {
   resetGameDifficulty,
