@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { Title } from '../Title';
-import { Text } from '../Text/index';
+import { Title } from '../../components/Title';
+import { Text } from '../../components/Text/index';
 import tw from 'twin.macro';
-import { ButtonLink } from '../ButtonLink';
+import { ButtonLink } from '../../components/ButtonLink';
 
 export function NotFoundPage() {
   return (

@@ -13,7 +13,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from 'styles/global-styles';
 
 import { HomePage } from './pages/HomePage';
-import { NotFoundPage } from './components/NotFoundPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { useTranslation } from 'react-i18next';
 import { BattleshipPage } from './pages/Battleship';
 import { GameOverPage } from './pages/GameOver';
