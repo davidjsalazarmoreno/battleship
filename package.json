@@ -110,6 +110,7 @@
       "pre-commit": "yarn run checkTs && lint-staged"
     }
   },
+  "homepage": "https://davidjsalazarmoreno.github.io/battleship/",
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
