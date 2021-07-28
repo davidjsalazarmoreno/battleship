@@ -4,7 +4,7 @@ notifications:
 node_js: 12
 branches:
     only:
-    - testing
+    - main
 before_install:
   - npm install
 script:
