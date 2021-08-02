@@ -66,6 +66,7 @@ export function BattleshipPage(props: Props) {
   if (turns === null) {
     return null;
   }
+
   return (
     <>
       <Helmet>
