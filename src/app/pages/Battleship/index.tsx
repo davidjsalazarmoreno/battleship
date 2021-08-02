@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { PageWrapper } from 'app/components/PageWrapper';
-import { Grid } from 'app/components/Grid';
-import { RootState } from 'types/RootState';
-import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { addMatchResult, resetMatchResult } from 'entities/score';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Title } from '../../components/Title';
+import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
+import { RootState } from 'types/RootState';
+import { PageWrapper } from 'app/components/PageWrapper';
 import { MatchInformation } from '../../components/MatchInformation';
+import { Helmet } from 'react-helmet-async';
+import { Grid } from 'app/components/Grid';
+import { addMatchResult, resetMatchResult } from 'entities/score';
 
 export type Props = {
   rows?: number;
