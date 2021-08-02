@@ -2,30 +2,30 @@ import React from 'react';
 
 import { render, screen } from '@testing-library/react';
 
-import { Grid } from '../index';
+import { BattleshipPage } from '../index';
 import { Provider } from 'react-redux';
 import { configureAppStore } from 'store/configureStore';
 import { getInitialShips } from '../../../game-logic/initialization';
 
 const store = configureAppStore();
 
-describe('<Grid />', () => {
+describe('<BattleshipPage />', () => {
   test('turns left should be 50 as default (medium difficulty)', () => {
     render(
       <Provider store={store}>
-        <Grid rows={10} columns={10} />
+        <BattleshipPage rows={10} columns={10} />
       </Provider>,
     );
     expect(screen.getByTestId('turns-left')).toHaveTextContent('50');
   });
 
-  test('should check player ship correct rendering in the grid', () => {
+  test('should check player ship correct rendering in the BattleshipPage', () => {
     const player = getInitialShips(10, 10);
     const cpu = getInitialShips(10, 10);
 
     render(
       <Provider store={store}>
-        <Grid
+        <BattleshipPage
           rows={10}
           columns={10}
           initialShips={{
