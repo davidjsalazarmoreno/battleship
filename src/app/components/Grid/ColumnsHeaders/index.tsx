@@ -14,7 +14,7 @@ export const ColumnHeaders: React.FC<Props> = props => {
   return (
     <>
       {range(columns).map((_, index) => {
-        const key = `${testPrefix}-${index}-column-heading`
+        const key = `${testPrefix}-${index}-column-heading`;
         return (
           <Wrapper data-testid={key} key={key}>
             <Content className="cell-content">{index}</Content>

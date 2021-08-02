@@ -16,7 +16,7 @@ export const RowsHeaders: React.FC<Props> = props => {
     <div className="flex flex-col justify-end uppercase">
       {range(rows).map((_, index) => {
         const letter = letters.shift() || '';
-        const key = `${testPrefix}-${index}-${letter}-row-heading`
+        const key = `${testPrefix}-${index}-${letter}-row-heading`;
         return (
           <Wrapper data-testid={key} key={key}>
             <Content className="cell-content">{letter}</Content>
