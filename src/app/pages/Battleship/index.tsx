@@ -30,7 +30,6 @@ export function BattleshipPage(props: Props) {
     turnsLeft,
     handleAttack,
     getScore,
-    // this one remove from hook?
     getCellClassName,
   } = useBattleship({
     rows,
