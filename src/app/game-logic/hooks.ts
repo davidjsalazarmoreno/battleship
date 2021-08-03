@@ -164,7 +164,6 @@ export function useGameLoop(turns: number) {
       gameLoop.playerShips === 0 ||
       gameLoop.cpuShips === 0
     ) {
-      // setGameLoop(loop => ({ ...loop, cpuTurn: false }));
       setMatchEnded(true);
     }
   }, [gameLoop]);
