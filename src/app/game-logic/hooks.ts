@@ -31,29 +31,16 @@ export function useBattleship(args: UseBattleshipArgs) {
     ...gameLoopPublicApi
   } = useGameLoop(turns);
 
-  useEffect(() => {
-    if (initialShips) {
-      setCpuShips(initialShips?.cpu!);
-      setPlayerShips(initialShips?.player!);
-    } else {
-      const cpus = getInitialShips(rows, columns);
-      const pls = getInitialShips(rows, columns);
-      setCpuShips(cpus);
-      setPlayerShips(pls);
+  const onCpuTurn = () => {
+    const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
+    if (playerGrid.length) {
+      let index = getRandomGridPosition(playerGrid.length);
+      if (playerGrid[index]) {
+        const { row, col } = playerGrid[index];
+        handleAttack(`${row}${col}`, true);
+      }
     }
-
-    setGrid(getGridArray(rows * columns));
-  }, [columns, rows, turns, initialShips]);
-
-  useEffect(() => {
-    if (matchEnded) {
-      return;
-    }
-
-    if (cpuTurn && !matchEnded) {
-      onCpuTurn();
-    }
-  }, [matchEnded, cpuTurn, grid]);
+  };
 
   const handlePlayerAttack = (position: string) => {
     const result = attack({
@@ -125,16 +112,25 @@ export function useBattleship(args: UseBattleshipArgs) {
     }
   };
 
-  const onCpuTurn = () => {
-    const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
-    if (playerGrid.length) {
-      let index = getRandomGridPosition(playerGrid.length);
-      if (playerGrid[index]) {
-        const { row, col } = playerGrid[index];
-        handleAttack(`${row}${col}`, true);
-      }
+  useEffect(() => {
+    if (initialShips) {
+      setCpuShips(initialShips?.cpu!);
+      setPlayerShips(initialShips?.player!);
+    } else {
+      const cpus = getInitialShips(rows, columns);
+      const pls = getInitialShips(rows, columns);
+      setCpuShips(cpus);
+      setPlayerShips(pls);
     }
-  };
+
+    setGrid(getGridArray(rows * columns));
+  }, [columns, rows, turns, initialShips]);
+
+  useEffect(() => {
+    if (cpuTurn && !matchEnded) {
+      onCpuTurn();
+    }
+  }, [matchEnded, cpuTurn, grid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Public API
   return {
@@ -150,23 +146,6 @@ export function useBattleship(args: UseBattleshipArgs) {
 export function useGameLoop(turns: number) {
   const [matchEnded, setMatchEnded] = useState(false);
   const [gameLoop, setGameLoop] = useState<GameLoop>(defaultGameLoop);
-
-  useEffect(() => {
-    setGameLoop({
-      ...defaultGameLoop,
-      turnsLeft: turns!,
-    });
-  }, [turns]);
-
-  useEffect(() => {
-    if (
-      gameLoop.turnsLeft === 0 ||
-      gameLoop.playerShips === 0 ||
-      gameLoop.cpuShips === 0
-    ) {
-      setMatchEnded(true);
-    }
-  }, [gameLoop]);
 
   const getScore: () => Score = () => {
     return {
@@ -188,6 +167,23 @@ export function useGameLoop(turns: number) {
       [shipsAfterStrike]: enemyShips.filter(ship => !ship.isSunk).length,
     }));
   };
+
+  useEffect(() => {
+    setGameLoop({
+      ...defaultGameLoop,
+      turnsLeft: turns!,
+    });
+  }, [turns]);
+
+  useEffect(() => {
+    if (
+      gameLoop.turnsLeft === 0 ||
+      gameLoop.playerShips === 0 ||
+      gameLoop.cpuShips === 0
+    ) {
+      setMatchEnded(true);
+    }
+  }, [gameLoop]);
 
   // Public API
   return {
