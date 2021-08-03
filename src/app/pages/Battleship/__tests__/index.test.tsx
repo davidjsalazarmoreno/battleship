@@ -8,11 +8,15 @@ import { getInitialShips } from '../../../game-logic/initialization';
 import { selectGameDifficulty } from 'entities/configuration';
 import { HelmetProvider } from 'react-helmet-async';
 
+const push = jest.fn(path => path);
+
+const useHistory = () => ({
+  push,
+});
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
+  useHistory,
 }));
 
 let store = configureAppStore();
@@ -36,6 +40,45 @@ describe('<BattleshipPage />', () => {
 
     expect(screen.getByTestId('turns-left')).toHaveTextContent('50');
   });
+
+  test('should redirect to home if turns value is null', () => {
+    const store = configureAppStore();
+
+    render(
+      <Provider store={store}>
+        <HelmetProvider>
+          <BattleshipPage rows={10} columns={10} />
+        </HelmetProvider>
+      </Provider>,
+    );
+    const spy = jest.spyOn(useHistory(), 'push');
+    expect(spy).toHaveBeenCalledWith('/');
+  });
+
+  test('should redirect to game over when match ended', () => {
+    const store = configureAppStore();
+    store.dispatch(selectGameDifficulty(2));
+
+    render(
+      <Provider store={store}>
+        <HelmetProvider>
+          <BattleshipPage />
+        </HelmetProvider>
+      </Provider>,
+    );
+
+    const selector = `cpu-a0`;
+    fireEvent(
+      screen.getByTestId(selector),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    const spy = jest.spyOn(useHistory(), 'push');
+    expect(spy).toHaveBeenCalledWith('/game-over');
+  });
+
 
   test('should check player ships are rendering in the BattleshipPage', () => {
     const player = getInitialShips(10, 10);
@@ -64,6 +107,7 @@ describe('<BattleshipPage />', () => {
       });
     });
   });
+  
 
   test('should check that a cpu ship is not visible by default', () => {
     const player = getInitialShips(10, 10);
@@ -155,5 +199,42 @@ describe('<BattleshipPage />', () => {
       const selector = `cpu-${position}`;
       expect(screen.getByTestId(selector)).toHaveClass('cell-sunk');
     });
+  });
+
+  test('should check if a ship was attacked or a shot missed', () => {
+    const player = getInitialShips(10, 10);
+    const cpu = getInitialShips(10, 10);
+    store.dispatch(selectGameDifficulty(50));
+
+    render(
+      <Provider store={store}>
+        <HelmetProvider>
+          <BattleshipPage
+            rows={10}
+            columns={10}
+            initialShips={{
+              player,
+              cpu,
+            }}
+          />
+        </HelmetProvider>
+      </Provider>,
+    );
+
+    const selector = `cpu-a0`;
+    fireEvent(
+      screen.getByTestId(selector),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    const containsClassNames = screen
+      .getByTestId(selector)
+      .className.split(' ')
+      .some(className => {
+        return className === 'cell-strike' || className === 'cell-failed-shot';
+      });
+    expect(containsClassNames).toBe(true);
   });
 });

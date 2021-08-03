@@ -43,14 +43,16 @@ export function useBattleship(args: UseBattleshipArgs) {
     }
 
     setGrid(getGridArray(rows * columns));
-  }, [columns, rows, turns]);
+  }, [columns, rows, turns, initialShips]);
 
   useEffect(() => {
     if (matchEnded) {
       return;
     }
 
-    onCpuTurn();
+    if (cpuTurn && !matchEnded) {
+      onCpuTurn();
+    }
   }, [matchEnded, cpuTurn, grid]);
 
   const handlePlayerAttack = (position: string) => {
@@ -124,14 +126,12 @@ export function useBattleship(args: UseBattleshipArgs) {
   };
 
   const onCpuTurn = () => {
-    if (cpuTurn) {
-      const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
-      if (playerGrid.length) {
-        let index = getRandomGridPosition(playerGrid.length);
-        if (playerGrid[index]) {
-          const { row, col } = playerGrid[index];
-          handleAttack(`${row}${col}`, true);
-        }
+    const playerGrid = getValidCellsToShot(grid, playerShips, shotsByCpu);
+    if (playerGrid.length) {
+      let index = getRandomGridPosition(playerGrid.length);
+      if (playerGrid[index]) {
+        const { row, col } = playerGrid[index];
+        handleAttack(`${row}${col}`, true);
       }
     }
   };
@@ -164,7 +164,7 @@ export function useGameLoop(turns: number) {
       gameLoop.playerShips === 0 ||
       gameLoop.cpuShips === 0
     ) {
-      setGameLoop(loop => ({ ...loop, cpuTurn: false }));
+      // setGameLoop(loop => ({ ...loop, cpuTurn: false }));
       setMatchEnded(true);
     }
   }, [gameLoop]);

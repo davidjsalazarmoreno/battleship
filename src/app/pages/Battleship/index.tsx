@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Title } from '../../components/Title';
 import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
@@ -42,15 +42,19 @@ export function BattleshipPage(props: Props) {
   );
   const dispatch = useDispatch();
 
+  const onMatchEnd = useCallback(() => {
+    const result = getScore();
+    setScoreboard([result, ...scoreboard]);
+    dispatch(addMatchResult(result));
+    history.push('/game-over');
+    return;
+  }, []);
+
   useEffect(() => {
     if (matchEnded) {
-      const result = getScore();
-      setScoreboard([result, ...scoreboard]);
-      dispatch(addMatchResult(result));
-      history.push('/game-over');
-      return;
+      onMatchEnd();
     }
-  }, [matchEnded, getScore, history, setScoreboard, dispatch, scoreboard]);
+  }, [matchEnded, onMatchEnd]);
 
   useEffect(() => {
     dispatch(resetMatchResult());
