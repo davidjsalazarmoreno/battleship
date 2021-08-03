@@ -33,7 +33,7 @@ We're using github pages, to trigger a re-deploy first checkout the main branch 
 $ npm run build
 $ mv ./build ./docs
 $ git add docs
-$ git commit -m "new release"
+$ git commit -m "new release" --no-verify
 $ git push origin main
 ```
 
