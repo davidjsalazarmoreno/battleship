@@ -4,16 +4,16 @@ import { CellModel } from '../../../game-logic/types';
 import tw from 'twin.macro';
 
 export type Props = {
-  testIdPrefix: string;
+  testPrefix: string;
   onClick?: Function;
   className: string;
 } & CellModel;
 
 export const Cell: React.FC<Props> = props => {
-  const { onClick = () => '', testIdPrefix } = props;
+  const { onClick = () => '', testPrefix } = props;
   return (
     <Wrapper
-      data-testid={`${testIdPrefix}-${props.row}${props.col}`}
+      data-testid={`${testPrefix}-${props.row}${props.col}`}
       onClick={() => onClick()}
       className={props.className}
     >

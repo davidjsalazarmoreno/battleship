@@ -56,7 +56,7 @@ export function Scoreboard() {
             </tr>
           </thead>
 
-          <tbody>{scores}</tbody>
+          <tbody>{scoreboard.length > 0 && scores}</tbody>
         </table>
         <ButtonLink to="/">Start page</ButtonLink>
       </Wrapper>
