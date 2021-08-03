@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Title } from '../../components/Title';
-import { Ship, useBattleship, useLocalStorage } from 'app/game-logic';
+import { Ship, useBattleship } from 'app/game-logic';
 import { RootState } from 'types/RootState';
 import { PageWrapper } from 'app/components/PageWrapper';
 import { MatchInformation } from '../../components/MatchInformation';
@@ -37,18 +37,14 @@ export function BattleshipPage(props: Props) {
     turns: turns || 50,
     initialShips: initialShips,
   });
-  const { storedValue: scoreboard, setValue: setScoreboard } = useLocalStorage(
-    [],
-  );
   const dispatch = useDispatch();
 
   const onMatchEnd = useCallback(() => {
     const result = getScore();
-    setScoreboard([result, ...scoreboard]);
     dispatch(addMatchResult(result));
     history.push('/game-over');
     return;
-  }, [getScore]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [getScore, history, dispatch]);
 
   useEffect(() => {
     if (matchEnded) {
