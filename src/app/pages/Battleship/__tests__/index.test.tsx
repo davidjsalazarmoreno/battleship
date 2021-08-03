@@ -79,7 +79,6 @@ describe('<BattleshipPage />', () => {
     expect(spy).toHaveBeenCalledWith('/game-over');
   });
 
-
   test('should check player ships are rendering in the BattleshipPage', () => {
     const player = getInitialShips(10, 10);
     const cpu = getInitialShips(10, 10);
@@ -107,7 +106,6 @@ describe('<BattleshipPage />', () => {
       });
     });
   });
-  
 
   test('should check that a cpu ship is not visible by default', () => {
     const player = getInitialShips(10, 10);

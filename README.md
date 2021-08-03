@@ -24,3 +24,17 @@ $ npm run start
 ```
 $ npm run test
 ```
+
+## Deploy
+
+We're using github pages, to trigger a re-deploy first checkout the main branch and remove the docs/ folders, then run the following commands.
+
+```
+$ npm run build
+$ mv ./build ./docs
+$ git add docs
+$ git commit -m "new release"
+$ git push origin main
+```
+
+After that you need to go to [https://davidjsalazarmoreno.github.io/](https://davidjsalazarmoreno.github.io/) to check your changes.
