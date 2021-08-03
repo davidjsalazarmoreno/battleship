@@ -16,9 +16,7 @@ export function MatchInformation(props: Props) {
   }
   return (
     <Wrapper>
-      <Title data-testid="turns-left" className="">
-        {`Turns: ${turnsLeft}`}
-      </Title>
+      <Title data-testid="turns-left">{`Turns: ${turnsLeft}`}</Title>
     </Wrapper>
   );
 }
