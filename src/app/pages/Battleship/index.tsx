@@ -48,7 +48,7 @@ export function BattleshipPage(props: Props) {
     dispatch(addMatchResult(result));
     history.push('/game-over');
     return;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [getScore]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (matchEnded) {
