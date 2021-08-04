@@ -19,7 +19,7 @@ export function GameOverPage() {
     if (!lastMatch) {
       history.push('/');
     } else {
-      setScoreboard([lastMatch, ...scoreboard]);
+      setScoreboard([{ ...lastMatch }, ...scoreboard]);
     }
   }, [lastMatch, history]); // eslint-disable-line react-hooks/exhaustive-deps
 

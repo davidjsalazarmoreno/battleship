@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { fireEvent, render, screen } from '@testing-library/react';
 import { HomePage } from '../index';
 import { Provider } from 'react-redux';
@@ -32,7 +31,6 @@ jest.mock('react-redux', () => ({
 describe('<HomePage />', () => {
   test('should check that all the button are available', () => {
     const store = configureAppStore();
-    // const spy = jest.spyOn();
 
     render(
       <Provider store={store}>
