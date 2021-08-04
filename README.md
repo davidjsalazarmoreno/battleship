@@ -37,4 +37,4 @@ $ git commit -m "new release" --no-verify
 $ git push origin main
 ```
 
-After that you need to go to [https://davidjsalazarmoreno.github.io/](https://davidjsalazarmoreno.github.io/) to check your changes.
+After that you need to go to [https://davidjsalazarmoreno.github.io/battleship/](https://davidjsalazarmoreno.github.io/battleship/) to check your changes.
