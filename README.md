@@ -1,7 +1,8 @@
 [![Twitter](https://img.shields.io/twitter/follow/davidjsmoreno.svg?style=social&label=@davidjsmoreno)](https://twitter.com/davidjsmoreno)
 
 ![Travis Status](https://img.shields.io/travis/davidjsalazarmoreno/battleship?branch=main)
-[![Coverage Status](https://coveralls.io/repos/github/davidjsalazarmoreno/battleship/badge.svg?branch=main)](https://coveralls.io/github/davidjsalazarmoreno/battleship?branch=main)
+
+[![Coverage Status](https://coveralls.io/repos/github/davidjsalazarmoreno/battleship/badge.svg)](https://coveralls.io/github/davidjsalazarmoreno/battleship)
 
 # Battleship
 
