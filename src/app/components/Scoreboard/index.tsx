@@ -27,9 +27,12 @@ export function Scoreboard() {
 
   const scores = scoreboard.map(score => {
     return (
-      <tr>
+      <tr key={`${new Date().getTime()}`}>
         {Object.values(score).map((value, index) => (
-          <td key={`${value}-${index}`} className="p-3 uppercase">
+          <td
+            key={`${value}-${index}-${new Date().getTime()}`}
+            className="p-3 uppercase"
+          >
             {value}
           </td>
         ))}
