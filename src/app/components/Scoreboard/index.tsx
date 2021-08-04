@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { useLocalStorage } from 'app/game-logic';
+import { useLocalStorage, uuidv4 } from 'app/game-logic';
 import { ButtonLink } from '../ButtonLink';
 import { Title } from '../Title/index';
 import tw from 'twin.macro';
@@ -27,12 +27,9 @@ export function Scoreboard() {
 
   const scores = scoreboard.map(score => {
     return (
-      <tr key={`${new Date().getTime()}`}>
+      <tr key={`${uuidv4()}`}>
         {Object.values(score).map((value, index) => (
-          <td
-            key={`${value}-${index}-${new Date().getTime()}`}
-            className="p-3 uppercase"
-          >
+          <td key={`${value}-${index}-${uuidv4()}`} className="p-3 uppercase">
             {value}
           </td>
         ))}
