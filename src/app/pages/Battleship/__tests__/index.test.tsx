@@ -27,7 +27,6 @@ describe('<BattleshipPage />', () => {
   });
 
   test('should check that turns left should be 50 as default (medium difficulty)', () => {
-    const store = configureAppStore();
     store.dispatch(selectGameDifficulty(50));
 
     render(
@@ -42,8 +41,6 @@ describe('<BattleshipPage />', () => {
   });
 
   test('should redirect to home if turns value is null', () => {
-    const store = configureAppStore();
-
     render(
       <Provider store={store}>
         <HelmetProvider>
