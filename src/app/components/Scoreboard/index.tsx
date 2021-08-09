@@ -49,8 +49,8 @@ export function Scoreboard() {
           <thead>
             <tr>
               <th className="p-3">Result</th>
-              <th className="p-3">Cpu ships</th>
-              <th className="p-3">Player Ships</th>
+              <th className="p-3">Cpu positions</th>
+              <th className="p-3">Player positions</th>
               <th className="p-3">Turns left</th>
               <th className="p-3">Difficulty</th>
             </tr>
