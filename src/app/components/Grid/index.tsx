@@ -11,7 +11,7 @@ export type Props = {
   columns: number;
   isCpu?: boolean;
   grid: CellModel[];
-  onAttack: (position: string) => void;
+  onAttack?: (position: string) => void;
   cellClassName: (position: string, isCpu: boolean) => string;
 };
 
@@ -32,7 +32,11 @@ export const Grid: React.FC<Props> = props => {
               testPrefix={testPrefix}
               {...cell}
               className={cellClassName(position, isCpu)}
-              onClick={() => onAttack(position)}
+              onClick={() => {
+                if (onAttack) {
+                  onAttack(position);
+                }
+              }}
             />
           );
         })}

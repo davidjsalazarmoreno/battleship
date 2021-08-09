@@ -96,7 +96,6 @@ export function BattleshipPage(props: Props) {
           rows={10}
           columns={10}
           grid={grid}
-          onAttack={handleAttack}
           cellClassName={getCellClassName}
         />
       </PageWrapper>
