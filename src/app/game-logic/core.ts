@@ -19,7 +19,8 @@ export function getShip(gridPosition: string, ships: Ship[]) {
 }
 
 export function getRandomGridPosition(length: number) {
-  return Math.round(Math.random() * length - 1);
+  const limit = length - 1;
+  return Math.round(Math.random() * limit);
 }
 
 export function getGridArray(dimensions: number) {

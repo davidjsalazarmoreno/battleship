@@ -31,6 +31,7 @@ export function BattleshipPage(props: Props) {
     handleAttack,
     getScore,
     getCellClassName,
+    cpuTurn,
   } = useBattleship({
     rows,
     columns,
@@ -81,10 +82,15 @@ export function BattleshipPage(props: Props) {
           columns={10}
           isCpu={true}
           grid={grid}
-          onAttack={handleAttack}
+          onAttack={position => {
+            if (cpuTurn) {
+              return;
+            }
+
+            handleAttack(position);
+          }}
           cellClassName={getCellClassName}
         />
-
         <Title>Player</Title>
         <Grid
           rows={10}

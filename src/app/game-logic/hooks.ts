@@ -51,14 +51,17 @@ export function useBattleship(args: UseBattleshipArgs) {
 
     if (Array.isArray(result)) {
       setCpuShips(result);
+      nextTurn({
+        enemyShips: result,
+        isCpuNext: true,
+      });
     } else {
       setShotsByPlayer(result);
+      nextTurn({
+        enemyShips: cpuShips,
+        isCpuNext: true,
+      });
     }
-
-    nextTurn({
-      enemyShips: cpuShips,
-      isCpuNext: true,
-    });
   };
 
   const handleCpuAttack = (position: string) => {
@@ -70,14 +73,17 @@ export function useBattleship(args: UseBattleshipArgs) {
 
     if (Array.isArray(result)) {
       setPlayerShips(result);
+      nextTurn({
+        enemyShips: result,
+        isCpuNext: false,
+      });
     } else {
       setShotsByCpu(result);
+      nextTurn({
+        enemyShips: playerShips,
+        isCpuNext: false,
+      });
     }
-
-    nextTurn({
-      enemyShips: playerShips,
-      isCpuNext: false,
-    });
   };
 
   const handleAttack = (position: string, isCpu = false) => {
@@ -137,6 +143,7 @@ export function useBattleship(args: UseBattleshipArgs) {
     matchEnded,
     grid,
     turnsLeft,
+    cpuTurn,
     handleAttack,
     getCellClassName,
     ...gameLoopPublicApi,
